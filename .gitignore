@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+storybook-static/
+.env
+.env.local
+*.log
+.DS_Store
+.idea/
+.vscode/
