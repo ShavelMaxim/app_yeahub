@@ -1,0 +1,75 @@
+.page {
+  composes: pageSection pageBackground from '../../../app/styles/layout.module.css';
+}
+
+.container {
+  composes: container from '../../../app/styles/layout.module.css';
+  max-width: 980px;
+}
+
+.back {
+  display: inline-flex;
+  margin-bottom: 24px;
+  color: var(--primary-700);
+}
+
+.card {
+  padding: 40px;
+}
+
+.id {
+  margin-bottom: 12px;
+  color: var(--black-500);
+  font-size: var(--font-size-body-2);
+}
+
+.card h1 {
+  margin: 0 0 20px;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.card p {
+  max-width: 760px;
+  color: var(--black-700);
+  font-size: var(--font-size-body-4);
+  line-height: 1.55;
+}
+
+.card img {
+  width: min(100%, 560px);
+  max-height: 320px;
+  margin-top: 24px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.actions a {
+  padding: 12px 18px;
+  border-radius: 10px;
+  color: white;
+  background: var(--primary-700);
+}
+
+.actions a + a {
+  color: var(--primary-700);
+  background: var(--primary-100);
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 24px 18px;
+  }
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+    text-align: center;
+  }
+}

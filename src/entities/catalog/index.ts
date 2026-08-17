@@ -4,6 +4,7 @@ export {
   useDeleteSkillMutation,
   useDeleteSpecializationMutation,
   useGetSkillsQuery,
+  useGetSpecializationByIdQuery,
   useGetSpecializationsQuery,
   useUpdateSkillMutation,
   useUpdateSpecializationMutation,

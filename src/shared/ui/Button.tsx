@@ -1,4 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { cn } from '@/shared/lib';
+import styles from './Button.module.css';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -25,11 +27,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => (
     <button
       ref={ref}
-      className={`button button--${variant} button--${size} ${fullWidth ? 'button--full' : ''} ${className}`}
+      className={cn(
+        styles.button,
+        styles[variant],
+        styles[size],
+        fullWidth && styles.fullWidth,
+        className,
+      )}
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? <span className="spinner" aria-hidden="true" /> : icon}
+      {loading ? <span className={styles.spinner} aria-hidden="true" /> : icon}
       <span>{loading ? 'Подождите…' : children}</span>
     </button>
   ),

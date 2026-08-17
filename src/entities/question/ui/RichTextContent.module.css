@@ -1,0 +1,158 @@
+.content {
+  color: var(--black-900);
+  font-size: var(--font-size-body-3);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.content p {
+  margin: 0 0 16px;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.content p:last-child,
+.content > :last-child {
+  margin-bottom: 0;
+}
+
+.content h2,
+.content h3,
+.content h4 {
+  margin: 24px 0 12px;
+  color: var(--black-900);
+  font-size: var(--font-size-body-4);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.35;
+}
+
+.content ul,
+.content ol {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 18px;
+  padding-left: 24px;
+}
+
+.content li::marker {
+  color: var(--primary-700);
+}
+
+.content blockquote {
+  margin: 18px 0;
+  border-left: 3px solid var(--primary-700);
+  padding: 8px 0 8px 16px;
+  color: var(--black-600);
+}
+
+.content a {
+  color: var(--primary-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.inlineCode {
+  border-radius: 4px;
+  padding: 2px 5px;
+  color: var(--success-900);
+  background: color-mix(in srgb, var(--success-600) 18%, var(--surface));
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.codeBlock {
+  position: relative;
+  overflow: hidden;
+  margin: 18px 0;
+  border-radius: 10px;
+  background: var(--black-800);
+}
+
+.codeBlock pre {
+  max-width: 100%;
+  margin: 0;
+  overflow-x: auto;
+  padding: 16px 54px 16px 16px;
+}
+
+.codeBlock code {
+  color: var(--surface);
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: var(--font-size-body-1);
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.keyword {
+  color: var(--primary-300);
+}
+
+.string {
+  color: var(--success-600);
+}
+
+.jsx {
+  color: var(--error-400);
+}
+
+.comment {
+  color: var(--black-300);
+}
+
+.copyButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  color: var(--surface);
+  background: var(--black-600);
+}
+
+.copyButton:hover {
+  background: var(--black-500);
+}
+
+.copyIcon {
+  position: relative;
+  width: 15px;
+  height: 15px;
+}
+
+.copyIcon i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.copyIcon i:first-child {
+  top: 1px;
+  left: 1px;
+}
+
+.copyIcon i:last-child {
+  right: 1px;
+  bottom: 1px;
+  background: var(--black-600);
+}
+
+.check {
+  font-size: var(--font-size-body-3);
+}
+
+@media (max-width: 600px) {
+  .content {
+    font-size: var(--font-size-body-2);
+  }
+
+  .codeBlock pre {
+    padding: 14px 48px 14px 14px;
+  }
+}

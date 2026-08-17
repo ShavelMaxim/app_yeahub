@@ -1,4 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
+import { cn } from '@/shared/lib';
+import styles from './Card.module.css';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -6,7 +8,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = ({ children, interactive, className = '', ...props }: CardProps) => (
-  <div className={`card ${interactive ? 'card--interactive' : ''} ${className}`} {...props}>
+  <div className={cn(styles.card, interactive && styles.interactive, className)} {...props}>
     {children}
   </div>
 );

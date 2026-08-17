@@ -16,7 +16,10 @@ describe('authSlice', () => {
 
   it('clears credentials', () => {
     const next = authReducer(
-      { token: 'token', user: { id: '1', username: 'alex', email: 'alex@example.com' } },
+      {
+        token: 'token',
+        user: { id: '1', username: 'alex', email: 'alex@example.com' },
+      },
       clearCredentials(),
     );
     expect(next).toEqual({ token: null, user: null });

@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { hasAdminRole, isTokenExpired } from '@/shared/lib';
 import { EmptyState, Skeleton } from '@/shared/ui';
+import styles from './ProtectedRoute.module.css';
 
 export const ProtectedRoute = ({
   children,
@@ -20,7 +21,7 @@ export const ProtectedRoute = ({
 
   if (admin && !user) {
     return (
-      <section className="page-section container">
+      <section className={styles.page}>
         <Skeleton lines={6} />
       </section>
     );
@@ -28,7 +29,7 @@ export const ProtectedRoute = ({
 
   if (admin && !hasAdminRole(user?.userRoles)) {
     return (
-      <section className="page-section container">
+      <section className={styles.page}>
         <EmptyState
           icon="🔒"
           title="Недостаточно прав"

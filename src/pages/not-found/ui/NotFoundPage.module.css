@@ -1,0 +1,7 @@
+.page {
+  composes: pageSection container from '../../../app/styles/layout.module.css';
+}
+
+.homeLink {
+  composes: button primary medium from '../../../shared/ui/Button.module.css';
+}

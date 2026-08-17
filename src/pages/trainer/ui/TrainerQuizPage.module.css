@@ -1,0 +1,127 @@
+.page,
+.resultPage {
+  width: min(1000px, calc(100% - 40px));
+  min-height: 70vh;
+  margin-inline: auto;
+  padding: 40px 0 100px;
+}
+.back {
+  color: var(--primary-700);
+}
+.demoNotice {
+  margin: 18px 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #6f5516;
+  background: #fff6d9;
+  font-size: 13px;
+}
+.progressRow {
+  margin: 26px 0 18px;
+  color: var(--black-500);
+  font-size: 14px;
+}
+.progressRow > div {
+  height: 7px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--black-50);
+}
+.progressRow i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary-700);
+}
+.quizCard,
+.resultCard {
+  border-radius: 20px;
+  padding: 48px;
+  background: white;
+  box-shadow: var(--shadow-subtle);
+}
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  color: var(--black-500);
+  font-size: 13px;
+}
+.meta span:first-child {
+  border-radius: 999px;
+  padding: 7px 12px;
+  color: var(--primary-700);
+  background: var(--primary-100);
+}
+.quizCard h1 {
+  margin: 42px 0 20px;
+  font-size: 34px;
+}
+.quizCard > p {
+  margin-bottom: 30px;
+}
+.answer {
+  margin-top: 28px;
+  border-left: 3px solid var(--primary-700);
+  border-radius: 0 12px 12px 0;
+  padding: 20px;
+  background: var(--black-25);
+}
+.answer h2 {
+  font-size: 20px;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+.resultPage {
+  display: grid;
+  place-items: center;
+}
+.resultCard {
+  width: min(650px, 100%);
+  text-align: center;
+}
+.resultCard > span {
+  display: grid;
+  width: 140px;
+  height: 140px;
+  place-items: center;
+  margin: 0 auto 28px;
+  border-radius: 50%;
+  color: var(--primary-700);
+  background: var(--primary-100);
+  font-size: 38px;
+}
+.resultCard h1 {
+  font-size: 40px;
+}
+.resultCard > div {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+@media (max-width: 600px) {
+  .page,
+  .resultPage {
+    width: calc(100% - 24px);
+    padding-top: 24px;
+  }
+  .quizCard,
+  .resultCard {
+    padding: 24px 18px;
+    border-radius: 14px;
+  }
+  .quizCard h1 {
+    margin-top: 30px;
+    font-size: 28px;
+  }
+  .actions,
+  .resultCard > div {
+    flex-direction: column;
+  }
+}

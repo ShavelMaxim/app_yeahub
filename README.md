@@ -8,7 +8,7 @@
 - регистрация и вход через API, хранение и автоматическая передача JWT;
 - защищённые маршруты и выход при ответе API `401`/истечении токена;
 - дашборд и редактирование профиля, выбор специализации и навыков;
-- загрузка и предпросмотр аватара (до 2 МБ);
+- загрузка аватара через `PATCH /users/{id}` в формате base64 и предпросмотр изображения (до 5 МБ);
 - админский CRUD специализаций и навыков с подтверждением удаления;
 - UI Kit (`Button`, `Input`, `Card`, `Modal`, `Skeleton`) со Storybook;
 - unit-тесты, ESLint, Prettier, Husky и lint-staged;
@@ -83,12 +83,29 @@ RTK Query автоматически добавляет `Authorization: Bearer <
 Основные использованные методы:
 
 - `POST /auth/login`, `POST /auth/signUp`, `GET /auth/profile`;
+- `PATCH /users/{id}` для данных пользователя и аватара (`avatarImage`);
 - `PATCH /users/{id}`, `PUT /profiles/{id}`;
 - CRUD `/specializations` и `/skills`;
 - `GET /questions/public-questions`.
 
 ## Деплой
 
-Workflow `.github/workflows/ci.yml` выполняет линтинг, проверку типов, тесты, сборку приложения, Storybook и Docker-образ. Для автоматического деплоя на конкретный VPS добавьте в GitHub Secrets адрес, SSH-пользователя и ключ, затем отдельный deploy job под инфраструктуру сервера.
+Workflow `.github/workflows/ci.yml` выполняет линтинг, проверку типов, тесты, сборку приложения, Storybook и Docker-образ. Deploy job включается только для push в `main`, когда repository variable `DEPLOY_ENABLED` имеет значение `true`.
 
-Ссылка на production: _добавьте после выдачи VPS и домена_.
+Для деплоя добавьте GitHub Secrets:
+
+- `VPS_HOST` — адрес сервера;
+- `VPS_PORT` — SSH-порт;
+- `VPS_USER` — SSH-пользователь;
+- `VPS_SSH_KEY` — приватный SSH-ключ;
+- `VPS_DEPLOY_PATH` — каталог, который Nginx использует как `root`.
+
+Repository variables:
+
+- `DEPLOY_ENABLED=true` — разрешает deploy job;
+- `API_URL=https://api.yeatwork.ru` — API для production-сборки;
+- `PRODUCTION_URL=https://example.com` — необязательная проверка после деплоя.
+
+На VPS должны быть заранее настроены Nginx, TLS/домен и права пользователя на запись в `VPS_DEPLOY_PATH`. Без инфраструктурных доступов deploy job остаётся выключенным.
+
+Ссылка на production: _укажите после выдачи VPS и домена_.

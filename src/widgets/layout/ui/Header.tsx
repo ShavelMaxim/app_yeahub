@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { clearCredentials, useAuth, useLogoutMutation } from '@/features/auth';
 import { baseApi } from '@/shared/api';
-import { hasAdminRole } from '@/shared/lib';
-import { Button, Logo } from '@/shared/ui';
+import { Logo } from '@/shared/ui';
+import sendSquareLeft from '@/shared/config/assets/icons/sendSquareLeft.svg';
+import accountArrowIcon from '@/shared/config/assets/icons/arrowMenuDown.svg';
+import styles from './Header.module.css';
 
-export const Header = () => {
+interface HeaderProps {
+  collapsed: boolean;
+  onToggleSidebar: () => void;
+}
+
+export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { token, user } = useAuth();
   const [logoutRequest] = useLogoutMutation();
@@ -23,68 +30,75 @@ export const Header = () => {
     dispatch(clearCredentials());
     dispatch(baseApi.util.resetApiState());
     closeMenu();
-    navigate('/');
+    navigate('/login', { replace: true });
   };
 
   return (
-    <header className="site-header">
-      <div className="container site-header__inner">
+    <header className={styles.header}>
+      <div className={styles.brandArea}>
         <Logo />
         <button
-          className="menu-toggle"
-          aria-label="Открыть меню"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
+          className={styles.sidebarToggle}
+          type="button"
+          aria-label={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
+          aria-expanded={!collapsed}
+          onClick={onToggleSidebar}
         >
-          <span />
-          <span />
-          <span />
+          <img
+            className={collapsed ? styles.sidebarArrowExpanded : styles.sidebarArrow}
+            src={sendSquareLeft}
+            alt=""
+            aria-hidden="true"
+          />
         </button>
-        <nav
-          className={`site-nav ${menuOpen ? 'site-nav--open' : ''}`}
-          aria-label="Основная навигация"
-        >
-          <NavLink to="/questions" onClick={closeMenu}>
-            База вопросов
-          </NavLink>
-          <NavLink to="/trainer" onClick={closeMenu}>
-            Тренажёр
-          </NavLink>
-          {token && (
-            <NavLink to="/dashboard" onClick={closeMenu}>
-              Дашборд
-            </NavLink>
-          )}
-          {token && hasAdminRole(user?.userRoles) && (
-            <NavLink to="/admin" onClick={closeMenu}>
-              Админка
-            </NavLink>
-          )}
-          <div className="site-nav__actions">
-            {token ? (
-              <>
-                <NavLink className="profile-link" to="/profile" onClick={closeMenu}>
-                  <span className="avatar avatar--small">
-                    {user?.username?.[0]?.toUpperCase() ?? 'U'}
-                  </span>
-                  {user?.username ?? 'Профиль'}
-                </NavLink>
-                <Button variant="ghost" size="small" onClick={logout}>
+      </div>
+
+      <div className={styles.accountArea}>
+        <span className={styles.membership}>Free</span>
+        {token ? (
+          <div className={styles.accountMenu}>
+            <button
+              className={styles.accountButton}
+              type="button"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span>{user?.username ?? 'Профиль'}</span>
+              <img
+                className={`${styles.accountArrow} ${menuOpen ? styles.accountArrowOpen : ''}`}
+                src={accountArrowIcon}
+                alt=""
+                aria-hidden="true"
+              />
+              <span className={styles.avatar}>
+                {user?.avatarUrl ? (
+                  <img src={user.avatarUrl} alt="" />
+                ) : (
+                  (user?.username?.[0]?.toUpperCase() ?? 'U')
+                )}
+              </span>
+            </button>
+            {menuOpen && (
+              <div className={styles.popover}>
+                <strong>{user?.username ?? 'Пользователь'}</strong>
+                <span>{user?.email}</span>
+                <Link to="/profile" onClick={closeMenu}>
+                  Мой профиль
+                </Link>
+                <Link to="/profile/edit" onClick={closeMenu}>
+                  Настройки
+                </Link>
+                <button type="button" onClick={logout}>
                   Выйти
-                </Button>
-              </>
-            ) : (
-              <>
-                <NavLink to="/login" onClick={closeMenu}>
-                  Войти
-                </NavLink>
-                <Button size="small" onClick={() => navigate('/register')}>
-                  Регистрация
-                </Button>
-              </>
+                </button>
+              </div>
             )}
           </div>
-        </nav>
+        ) : (
+          <button className={styles.login} type="button" onClick={() => navigate('/login')}>
+            Войти
+          </button>
+        )}
       </div>
     </header>
   );

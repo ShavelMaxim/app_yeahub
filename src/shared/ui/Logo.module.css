@@ -1,0 +1,68 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  padding: 8px;
+  border-radius: 50%;
+  background: var(--primary-700);
+}
+
+.mark img {
+  width: 20px;
+  height: 21px;
+}
+
+.wordmark {
+  width: 95px;
+  height: 20px;
+}
+
+.wordmarkOnly .mark {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .forceMark .mark {
+    display: grid;
+  }
+}
+
+.large {
+  gap: 8px;
+}
+
+.large .mark {
+  width: 46px;
+  height: 46px;
+  flex-basis: 46px;
+  padding: 0;
+  background: transparent;
+}
+
+.large .mark img {
+  width: 46px;
+  height: 46px;
+}
+
+.large .wordmark {
+  width: 132px;
+  height: 28px;
+}
+
+@media (max-width: 520px) {
+  .logo:not(.large) .wordmark {
+    display: none;
+  }
+
+  .logo.forceWordmark .wordmark {
+    display: block;
+  }
+}

@@ -1,5 +1,6 @@
 import { baseApi } from '@/shared/api';
 import type { Profile, User } from '../model/types';
+import type { ProfileUpdateBody, UserUpdateBody } from '../model/profileUpdate';
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -7,21 +8,39 @@ const userApi = baseApi.injectEndpoints({
       query: () => '/auth/profile',
       providesTags: ['Me'],
     }),
-    updateUser: builder.mutation<User, { id: string; body: Partial<User> }>({
+    updateUser: builder.mutation<User, { id: string; body: UserUpdateBody }>({
       query: ({ id, body }) => ({ url: `/users/${id}`, method: 'PATCH', body }),
-      invalidatesTags: ['Me'],
+    }),
+    createProfile: builder.mutation<
+      void,
+      {
+        userId: string;
+        profileType: number;
+        specializationId: number;
+        markingWeight: number;
+      }
+    >({
+      query: (body) => ({ url: '/profiles', method: 'POST', body }),
+    }),
+    setActiveProfile: builder.mutation<void, string>({
+      query: (profileId) => ({ url: `/profiles/${profileId}/active`, method: 'PATCH' }),
     }),
     updateProfile: builder.mutation<
       Profile,
       {
         id: string;
-        body: Partial<Omit<Profile, 'profileSkills'>> & { profileSkills?: string[] };
+        body: ProfileUpdateBody;
       }
     >({
       query: ({ id, body }) => ({ url: `/profiles/${id}`, method: 'PUT', body }),
-      invalidatesTags: ['Me', 'Profile'],
     }),
   }),
 });
 
-export const { useGetMeQuery, useUpdateUserMutation, useUpdateProfileMutation } = userApi;
+export const {
+  useGetMeQuery,
+  useCreateProfileMutation,
+  useSetActiveProfileMutation,
+  useUpdateUserMutation,
+  useUpdateProfileMutation,
+} = userApi;

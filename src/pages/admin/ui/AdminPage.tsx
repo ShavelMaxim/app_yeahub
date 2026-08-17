@@ -1,22 +1,33 @@
-import { useMemo, useState, type FormEvent } from 'react';
-import { Button, Card, EmptyState, Input, Modal, Skeleton } from '@/shared/ui';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, EmptyState, Input, Modal, Pagination, Skeleton } from '@/shared/ui';
 import {
   useCreateSkillMutation,
   useCreateSpecializationMutation,
   useDeleteSkillMutation,
   useDeleteSpecializationMutation,
   useGetSkillsQuery,
+  useGetSpecializationByIdQuery,
   useGetSpecializationsQuery,
   useUpdateSkillMutation,
   useUpdateSpecializationMutation,
 } from '@/entities/catalog';
+import trash from '@/shared/config/assets/icons/trash.svg';
+import PencilSimple from '@/shared/config/assets/icons/PencilSimple.svg';
+import ArrowRight from '@/shared/config/assets/icons/ArrowRight.svg';
 import type { EntityPayload, Skill, Specialization } from '@/entities/catalog';
 import { getApiErrorMessage } from '@/shared/lib';
+import styles from './AdminPage.module.css';
 
 type EntityKind = 'specializations' | 'skills';
 type EditableEntity = Skill | Specialization;
 
 export default function AdminPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { specializationId } = useParams();
+  const isCreateRoute = location.pathname.endsWith('/specializations/new');
+  const isEditRoute = location.pathname.endsWith('/edit') && Boolean(specializationId);
   const [kind, setKind] = useState<EntityKind>('specializations');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -27,7 +38,14 @@ export default function AdminPage() {
   const [deleting, setDeleting] = useState<EditableEntity | null>(null);
   const [form, setForm] = useState<EntityPayload>({ title: '', description: '' });
   const [error, setError] = useState('');
-  const specs = useGetSpecializationsQuery({ page, limit: 10 });
+  const routeSpecialization = useGetSpecializationByIdQuery(Number(specializationId), {
+    skip: !isEditRoute || !specializationId,
+  });
+  const specs = useGetSpecializationsQuery({
+    page,
+    limit: 10,
+    title: kind === 'specializations' ? search || undefined : undefined,
+  });
   const skills = useGetSkillsQuery({
     page,
     limit: 10,
@@ -39,6 +57,23 @@ export default function AdminPage() {
   const [createSkill, createSkillState] = useCreateSkillMutation();
   const [updateSkill, updateSkillState] = useUpdateSkillMutation();
   const [deleteSkill, deleteSkillState] = useDeleteSkillMutation();
+
+  useEffect(() => {
+    if (isCreateRoute) {
+      setKind('specializations');
+      setForm({ title: '', description: '' });
+      setEditor({ open: true, item: null });
+      setError('');
+    } else if (isEditRoute && routeSpecialization.data) {
+      setKind('specializations');
+      setForm({
+        title: routeSpecialization.data.title,
+        description: routeSpecialization.data.description ?? '',
+      });
+      setEditor({ open: true, item: routeSpecialization.data });
+      setError('');
+    }
+  }, [isCreateRoute, isEditRoute, routeSpecialization.data]);
 
   const query = kind === 'specializations' ? specs : skills;
   const filteredData = useMemo(() => {
@@ -60,7 +95,10 @@ export default function AdminPage() {
     setEditor({ open: true, item });
     setError('');
   };
-  const closeEditor = () => setEditor({ open: false, item: null });
+  const closeEditor = () => {
+    setEditor({ open: false, item: null });
+    if (isCreateRoute || isEditRoute) navigate('/admin', { replace: true });
+  };
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -102,33 +140,41 @@ export default function AdminPage() {
   const isDeleting = deleteSpecState.isLoading || deleteSkillState.isLoading;
 
   return (
-    <section className="page-section admin-page">
-      <div className="container">
-        <div className="dashboard-heading">
+    <section className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.heading}>
           <div>
-            <span className="eyebrow">Управление контентом</span>
+            <span className={styles.eyebrow}>Управление контентом</span>
             <h1>Административная панель</h1>
             <p>Создавайте и редактируйте данные платформы.</p>
           </div>
-          <Button onClick={() => openEditor()}>+ Добавить {singular}</Button>
+          <Button
+            className={styles.headingButton}
+            onClick={() =>
+              kind === 'specializations' ? navigate('/admin/specializations/new') : openEditor()
+            }
+          >
+            + Добавить {singular}
+          </Button>
         </div>
-        <Card className="admin-card">
-          <div className="admin-toolbar">
-            <div className="tabs" role="tablist">
+        <Card className={styles.card}>
+          <div className={styles.toolbar}>
+            <div className={styles.tabs} role="tablist">
               <button
-                className={kind === 'specializations' ? 'active' : ''}
+                className={kind === 'specializations' ? styles.active : undefined}
                 onClick={() => switchKind('specializations')}
               >
                 Специализации
               </button>
               <button
-                className={kind === 'skills' ? 'active' : ''}
+                className={kind === 'skills' ? styles.active : undefined}
                 onClick={() => switchKind('skills')}
               >
                 Навыки
               </button>
             </div>
             <Input
+              className={styles.search}
               label="Поиск"
               aria-label="Поиск"
               value={search}
@@ -137,34 +183,36 @@ export default function AdminPage() {
             />
           </div>
           {error && !editor.open && (
-            <div className="alert alert--error" role="alert">
+            <div className={styles.error} role="alert">
               {error}
             </div>
           )}
           {query.isLoading ? (
-            <Skeleton lines={8} />
+            <Skeleton className={styles.contentState} lines={8} />
           ) : query.isError ? (
             <EmptyState
+              className={styles.contentState}
               icon="!"
               title="Данные не загрузились"
               description="Проверьте соединение с API и права аккаунта."
             />
           ) : !filteredData.length ? (
             <EmptyState
+              className={styles.contentState}
               title={`${title} не найдены`}
               description="Измените запрос или создайте первую запись."
               action={<Button onClick={() => openEditor()}>Добавить</Button>}
             />
           ) : (
-            <div className="table-scroll">
-              <table>
+            <div className={styles.tableScroll}>
+              <table className={styles.table}>
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>Название</th>
                     <th>Описание</th>
                     <th>
-                      <span className="visually-hidden">Действия</span>
+                      <span className={styles.visuallyHidden}>Действия</span>
                     </th>
                   </tr>
                 </thead>
@@ -177,14 +225,27 @@ export default function AdminPage() {
                       </td>
                       <td>{item.description || '—'}</td>
                       <td>
-                        <div className="table-actions">
+                        <div className={styles.tableActions}>
+                          {kind === 'specializations' && (
+                            <Link
+                              className={styles.detailsLink}
+                              to={`/admin/specializations/${item.id}`}
+                              aria-label={`Открыть специализацию ${item.title}`}
+                            >
+                              <img src={ArrowRight} alt="icon-arrow" />
+                            </Link>
+                          )}
                           <Button
                             variant="ghost"
                             size="small"
-                            onClick={() => openEditor(item)}
+                            onClick={() =>
+                              kind === 'specializations'
+                                ? navigate(`/admin/specializations/${item.id}/edit`)
+                                : openEditor(item)
+                            }
                             aria-label={`Редактировать ${item.title}`}
                           >
-                            ✎
+                            <img src={PencilSimple} alt="icon-pencil" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -195,7 +256,7 @@ export default function AdminPage() {
                             }}
                             aria-label={`Удалить ${item.title}`}
                           >
-                            ⌫
+                            <img src={trash} alt="icon-trash" />
                           </Button>
                         </div>
                       </td>
@@ -205,20 +266,11 @@ export default function AdminPage() {
               </table>
             </div>
           )}
-          <div className="pagination">
-            <button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>
-              ← Назад
-            </button>
-            <span>
-              Страница {page} · всего {query.data?.total ?? 0}
-            </span>
-            <button
-              disabled={!query.data || page * 10 >= query.data.total}
-              onClick={() => setPage((value) => value + 1)}
-            >
-              Вперёд →
-            </button>
-          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil((query.data?.total ?? 0) / 10)}
+            onPageChange={setPage}
+          />
         </Card>
       </div>
 
@@ -245,9 +297,9 @@ export default function AdminPage() {
             placeholder="Например, React"
             autoFocus
           />
-          <label className="field">
-            <span className="field__label">Описание</span>
-            <span className="field__control">
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Описание</span>
+            <span className={styles.fieldControl}>
               <textarea
                 rows={5}
                 value={form.description}
@@ -257,7 +309,7 @@ export default function AdminPage() {
             </span>
           </label>
           {error && (
-            <div className="alert alert--error" role="alert">
+            <div className={styles.error} role="alert">
               {error}
             </div>
           )}
@@ -282,7 +334,7 @@ export default function AdminPage() {
           Запись <strong>«{deleting?.title}»</strong> будет удалена без возможности восстановления.
         </p>
         {error && (
-          <div className="alert alert--error" role="alert">
+          <div className={styles.error} role="alert">
             {error}
           </div>
         )}

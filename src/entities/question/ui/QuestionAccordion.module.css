@@ -1,0 +1,159 @@
+.question {
+  overflow: hidden;
+  background: var(--surface);
+  border-top: 1px solid var(--black-50);
+}
+
+.trigger {
+  display: flex;
+  width: 100%;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 0;
+  padding: 15px 0;
+  color: var(--black-900);
+  background: var(--surface);
+  text-align: left;
+}
+
+.trigger:hover {
+  background: var(--black-25);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--font-size-body-4);
+  line-height: 1.35;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--primary-700);
+}
+
+.chevron {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  object-fit: contain;
+  transform: rotate(0deg);
+  transition: transform 160ms ease;
+}
+
+.open .chevron {
+  transform: rotate(180deg);
+}
+
+.answer {
+  padding: 0 24px 24px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 38px;
+  margin-bottom: 28px;
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  color: var(--black-700);
+  background: var(--black-25);
+  border-radius: 6px;
+  font-size: var(--font-size-body-1);
+}
+
+.meta b {
+  display: grid;
+  min-width: 20px;
+  min-height: 20px;
+  place-items: center;
+  color: var(--surface);
+  background: var(--primary-700);
+  border-radius: 4px;
+}
+
+.more {
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.more:hover {
+  background: var(--black-25);
+}
+
+.more img {
+  width: 3px;
+  height: 15px;
+  margin: auto;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.skills span {
+  padding: 5px 10px;
+  color: var(--primary-800);
+  background: var(--primary-100);
+  border-radius: 6px;
+  font-size: var(--font-size-body-1);
+}
+
+.detailsLink {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 0 auto;
+  color: var(--primary-700);
+  font-size: var(--font-size-body-3);
+}
+
+.detailsLink span {
+  font-size: 24px;
+}
+
+@media (max-width: 600px) {
+  .trigger {
+    min-height: 54px;
+    padding: 14px 16px;
+  }
+
+  .title {
+    align-items: flex-start;
+    font-size: var(--font-size-body-3);
+  }
+
+  .dot {
+    margin-top: 6px;
+  }
+
+  .answer {
+    padding: 0 16px 18px;
+  }
+
+  .metaRow {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+}

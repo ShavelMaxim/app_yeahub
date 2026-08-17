@@ -1,0 +1,128 @@
+.typography {
+  margin-block: 0;
+}
+
+.headline1 {
+  font-size: var(--font-size-headline-1);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-headline-1);
+}
+
+.headline2 {
+  font-size: var(--font-size-headline-2);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-headline-2);
+}
+
+.headline3 {
+  font-size: var(--font-size-headline-3);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-headline-3);
+}
+
+.headline4,
+.headline5 {
+  font-size: var(--font-size-headline-4);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-headline-4);
+}
+
+.headline5 {
+  text-transform: uppercase;
+}
+
+.body1,
+.body1Accent {
+  font-size: var(--font-size-body-1);
+  line-height: var(--line-height-body-1);
+}
+
+.body2,
+.body2Accent,
+.body2Strong {
+  font-size: var(--font-size-body-2);
+  line-height: var(--line-height-body-2);
+}
+
+.body3,
+.body3Accent,
+.body3Strong {
+  font-size: var(--font-size-body-3);
+  line-height: var(--line-height-body-3);
+}
+
+.body3Accent,
+.body3Strong {
+  line-height: var(--line-height-body-3-accent);
+}
+
+.body4 {
+  font-size: var(--font-size-body-4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-body-4);
+}
+
+.body5,
+.body5Accent,
+.body5Caption,
+.body5Strong {
+  font-size: var(--font-size-body-5);
+  line-height: var(--line-height-body-5);
+}
+
+.body6 {
+  font-size: var(--font-size-body-6);
+  line-height: var(--line-height-body-6);
+}
+
+.body1,
+.body2,
+.body3,
+.body5 {
+  font-weight: var(--font-weight-regular);
+}
+
+.body1Accent,
+.body2Accent,
+.body3Accent,
+.body5Accent,
+.body5Caption,
+.body6 {
+  font-weight: var(--font-weight-medium);
+}
+
+.body2Strong,
+.body3Strong,
+.body5Strong {
+  font-weight: var(--font-weight-semibold);
+}
+
+.body5Caption {
+  text-transform: uppercase;
+}
+
+.inherit {
+  color: inherit;
+}
+
+.primary {
+  color: var(--primary);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+}
+
+.success {
+  color: var(--success);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

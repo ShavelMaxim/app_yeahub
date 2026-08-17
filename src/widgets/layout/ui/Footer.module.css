@@ -1,0 +1,122 @@
+.footer {
+  padding: 0;
+  color: white;
+  background: var(--black-25);
+}
+
+.inner {
+  width: 100%;
+  min-height: 372px;
+  padding: 64px max(7.7vw, 24px) 24px;
+  border-radius: 20px 20px 0 0;
+  background: var(--primary-dark);
+}
+
+.brand {
+  display: block;
+  margin-bottom: 18px;
+  font-size: 28px;
+}
+
+.slogan {
+  width: 250px;
+  color: white;
+  line-height: 1.35;
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+  margin: 18px 0 60px;
+}
+
+.socials a {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.socials img {
+  width: 28px;
+  height: 28px;
+}
+
+.youtube {
+  color: var(--primary-dark);
+  background: white !important;
+  font-size: 12px;
+}
+
+.about {
+  margin-bottom: 34px;
+  color: var(--primary-400);
+  font-size: var(--font-size-body-1);
+}
+
+.bottom,
+.bottom > div {
+  display: flex;
+  align-items: center;
+}
+
+.bottom {
+  justify-content: space-between;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+  padding-top: 20px;
+  color: var(--primary-400);
+  font-size: var(--font-size-body-2);
+}
+
+.bottom > div {
+  gap: 14px;
+}
+
+.bottom img {
+  width: 26px;
+  height: 26px;
+}
+
+@media (max-width: 620px) {
+  .inner {
+    min-height: 300px;
+    padding: 20px 16px 16px;
+  }
+
+  .socials {
+    margin: 14px 0 22px;
+  }
+
+  .brand {
+    margin-bottom: 14px;
+  }
+
+  .slogan {
+    width: auto;
+    font-size: 13px;
+  }
+
+  .about {
+    margin-bottom: 18px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .bottom {
+    gap: 12px;
+    padding-top: 14px;
+    font-size: 12px;
+  }
+
+  .bottom > div {
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .bottom img {
+    width: 18px;
+    height: 18px;
+  }
+}
