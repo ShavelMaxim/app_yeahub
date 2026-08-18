@@ -2,6 +2,8 @@
 
 Учебная платформа для подготовки к IT-собеседованиям. Проект создан с нуля по техническому заданию YeaHub и работает с публичным API `https://api.yeatwork.ru`.
 
+Сайт: [https://shavelmaxim.github.io/app_yeahub/](https://shavelmaxim.github.io/app_yeahub/)
+
 ## Возможности
 
 - адаптивный лендинг, база вопросов и тренажёр;
@@ -90,22 +92,8 @@ RTK Query автоматически добавляет `Authorization: Bearer <
 
 ## Деплой
 
-Workflow `.github/workflows/ci.yml` выполняет линтинг, проверку типов, тесты, сборку приложения, Storybook и Docker-образ. Deploy job включается только для push в `main`, когда repository variable `DEPLOY_ENABLED` имеет значение `true`.
+Workflow `.github/workflows/ci.yml` выполняет линтинг, проверку типов, тесты, сборку приложения, Storybook и Docker-образ. После успешных проверок push в `main` создаёт production-сборку в `dist` и публикует этот артефакт в GitHub Pages.
 
-Для деплоя добавьте GitHub Secrets:
+В настройках репозитория **Settings → Pages → Build and deployment → Source** должен быть выбран вариант **GitHub Actions**. Секреты для деплоя не нужны. Необязательная repository variable `API_URL` задаёт адрес API для production-сборки; по умолчанию используется `https://api.yeatwork.ru`.
 
-- `VPS_HOST` — адрес сервера;
-- `VPS_PORT` — SSH-порт;
-- `VPS_USER` — SSH-пользователь;
-- `VPS_SSH_KEY` — приватный SSH-ключ;
-- `VPS_DEPLOY_PATH` — каталог, который Nginx использует как `root`.
-
-Repository variables:
-
-- `DEPLOY_ENABLED=true` — разрешает deploy job;
-- `API_URL=https://api.yeatwork.ru` — API для production-сборки;
-- `PRODUCTION_URL=https://example.com` — необязательная проверка после деплоя.
-
-На VPS должны быть заранее настроены Nginx, TLS/домен и права пользователя на запись в `VPS_DEPLOY_PATH`. Без инфраструктурных доступов deploy job остаётся выключенным.
-
-Ссылка на production: _укажите после выдачи VPS и домена_.
+Ссылка на GitHub Pages: [https://shavelmaxim.github.io/app_yeahub/](https://shavelmaxim.github.io/app_yeahub/)

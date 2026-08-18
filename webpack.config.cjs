@@ -4,6 +4,8 @@ const webpack = require('webpack');
 
 module.exports = (_, argv) => {
   const isProduction = argv.mode === 'production';
+  const basePath = process.env.BASE_PATH || '/';
+  const publicPath = basePath.endsWith('/') ? basePath : `${basePath}/`;
 
   return {
     entry: path.resolve(__dirname, 'src/index.tsx'),
@@ -13,7 +15,7 @@ module.exports = (_, argv) => {
       chunkFilename: isProduction
         ? 'assets/[name].[contenthash:8].chunk.js'
         : 'assets/[name].chunk.js',
-      publicPath: '/',
+      publicPath,
       clean: true,
     },
     resolve: {
@@ -58,8 +60,13 @@ module.exports = (_, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public/index.html') }),
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, 'public/index.html'),
+        filename: '404.html',
+      }),
       new webpack.DefinePlugin({
         'process.env.API_URL': JSON.stringify(process.env.API_URL || 'https://api.yeatwork.ru'),
+        'process.env.BASE_PATH': JSON.stringify(basePath),
       }),
     ],
     devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',

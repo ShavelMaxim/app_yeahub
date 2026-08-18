@@ -35,53 +35,59 @@ const fallback = (
 );
 const lazyPage = (page: ReactNode) => <Suspense fallback={fallback}>{page}</Suspense>;
 
-const router = createBrowserRouter([
-  {
-    element: <PublicLayout />,
-    children: [
-      { path: '/', element: lazyPage(<LandingPage />) },
-      { path: '/questions', element: lazyPage(<QuestionsPage />) },
-      { path: '/questions/:questionId', element: lazyPage(<QuestionPage />) },
-      { path: '/trainer', element: lazyPage(<TrainerPage />) },
-      { path: '/trainer/quiz', element: lazyPage(<TrainerQuizPage />) },
-    ],
-  },
-  {
-    element: <AppLayout />,
-    children: [
-      { path: '/wiki/questions', element: lazyPage(<QuestionsPage />) },
-      { path: '/interview', element: lazyPage(<TrainerPage />) },
-      {
-        path: '/dashboard',
-        element: <ProtectedRoute>{lazyPage(<DashboardPage />)}</ProtectedRoute>,
-      },
-      { path: '/profile', element: <ProtectedRoute>{lazyPage(<ProfilePage />)}</ProtectedRoute> },
-      {
-        path: '/profile/edit',
-        element: <ProtectedRoute>{lazyPage(<ProfileEditPage />)}</ProtectedRoute>,
-      },
-      { path: '/admin', element: <ProtectedRoute admin>{lazyPage(<AdminPage />)}</ProtectedRoute> },
-      {
-        path: '/admin/specializations/new',
-        element: <ProtectedRoute admin>{lazyPage(<AdminPage />)}</ProtectedRoute>,
-      },
-      {
-        path: '/admin/specializations/:specializationId/edit',
-        element: <ProtectedRoute admin>{lazyPage(<AdminPage />)}</ProtectedRoute>,
-      },
-      {
-        path: '/admin/specializations/:specializationId',
-        element: <ProtectedRoute admin>{lazyPage(<SpecializationPage />)}</ProtectedRoute>,
-      },
-    ],
-  },
-  { path: '/login', element: lazyPage(<AuthPage mode="login" />) },
-  { path: '/register', element: lazyPage(<AuthPage mode="register" />) },
-  { path: '/forgot-password', element: lazyPage(<PasswordRecoveryPage />) },
-  { path: '/change-password', element: lazyPage(<ChangePasswordPage />) },
-  { path: '/reset-password', element: lazyPage(<ChangePasswordPage />) },
-  { path: '/404', element: lazyPage(<NotFoundPage />) },
-  { path: '*', element: <Navigate to="/404" replace /> },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      element: <PublicLayout />,
+      children: [
+        { path: '/', element: lazyPage(<LandingPage />) },
+        { path: '/questions', element: lazyPage(<QuestionsPage />) },
+        { path: '/questions/:questionId', element: lazyPage(<QuestionPage />) },
+        { path: '/trainer', element: lazyPage(<TrainerPage />) },
+        { path: '/trainer/quiz', element: lazyPage(<TrainerQuizPage />) },
+      ],
+    },
+    {
+      element: <AppLayout />,
+      children: [
+        { path: '/wiki/questions', element: lazyPage(<QuestionsPage />) },
+        { path: '/interview', element: lazyPage(<TrainerPage />) },
+        {
+          path: '/dashboard',
+          element: <ProtectedRoute>{lazyPage(<DashboardPage />)}</ProtectedRoute>,
+        },
+        { path: '/profile', element: <ProtectedRoute>{lazyPage(<ProfilePage />)}</ProtectedRoute> },
+        {
+          path: '/profile/edit',
+          element: <ProtectedRoute>{lazyPage(<ProfileEditPage />)}</ProtectedRoute>,
+        },
+        {
+          path: '/admin',
+          element: <ProtectedRoute admin>{lazyPage(<AdminPage />)}</ProtectedRoute>,
+        },
+        {
+          path: '/admin/specializations/new',
+          element: <ProtectedRoute admin>{lazyPage(<AdminPage />)}</ProtectedRoute>,
+        },
+        {
+          path: '/admin/specializations/:specializationId/edit',
+          element: <ProtectedRoute admin>{lazyPage(<AdminPage />)}</ProtectedRoute>,
+        },
+        {
+          path: '/admin/specializations/:specializationId',
+          element: <ProtectedRoute admin>{lazyPage(<SpecializationPage />)}</ProtectedRoute>,
+        },
+      ],
+    },
+    { path: '/login', element: lazyPage(<AuthPage mode="login" />) },
+    { path: '/register', element: lazyPage(<AuthPage mode="register" />) },
+    { path: '/forgot-password', element: lazyPage(<PasswordRecoveryPage />) },
+    { path: '/change-password', element: lazyPage(<ChangePasswordPage />) },
+    { path: '/reset-password', element: lazyPage(<ChangePasswordPage />) },
+    { path: '/404', element: lazyPage(<NotFoundPage />) },
+    { path: '*', element: <Navigate to="/404" replace /> },
+  ],
+  { basename: process.env.BASE_PATH || '/' },
+);
 
 export const App = () => <RouterProvider router={router} />;
