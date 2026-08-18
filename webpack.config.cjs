@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 module.exports = (_, argv) => {
   const isProduction = argv.mode === 'production';
-  const basePath = process.env.BASE_PATH || '/';
+  const basePath = isProduction ? '/app_yeahub/' : process.env.BASE_PATH || '/';
   const publicPath = basePath.endsWith('/') ? basePath : `${basePath}/`;
 
   return {
