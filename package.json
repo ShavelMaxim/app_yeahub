@@ -1,5 +1,5 @@
 {
-  "name": "yeahub-practice",
+  "name": "app_yeahub",
   "version": "1.0.0",
   "private": true,
   "description": "YeaHub practice platform built with React, TypeScript, Redux Toolkit and Webpack",
