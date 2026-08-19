@@ -18,8 +18,14 @@
 
 .navigation {
   display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .navItem,
@@ -110,6 +116,7 @@
 .support {
   display: flex;
   min-height: 48px;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   gap: 9px;

@@ -133,9 +133,13 @@
   right: 0;
   display: flex;
   width: 260px;
+  max-height: calc(100vh - var(--app-header-height) - 28px);
+  max-height: calc(100dvh - var(--app-header-height) - 28px);
   flex-direction: column;
   gap: 5px;
   padding: 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--surface);
   border: 1px solid var(--black-50);
   border-radius: 12px;

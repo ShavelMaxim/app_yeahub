@@ -23,6 +23,7 @@ export const Logo = ({
     className={cn(
       styles.logo,
       variant === 'wordmark' && styles.wordmarkOnly,
+      variant === 'secondary' && styles.secondary,
       size === 'large' && styles.large,
       showWordmarkOnMobile && styles.forceWordmark,
       showMarkOnMobile && styles.forceMark,

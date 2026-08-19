@@ -1,5 +1,6 @@
 .shell {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--black-25);
 }
 
@@ -121,7 +122,11 @@
     position: absolute;
     inset: 64px 0 auto;
     display: flex;
+    max-height: calc(100vh - 64px);
+    max-height: calc(100dvh - 64px);
     align-items: stretch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 24px 30px;
     background: white;
     box-shadow: var(--shadow-floating);
@@ -180,7 +185,11 @@
     position: absolute;
     inset: 72px 0 auto;
     display: none;
+    max-height: calc(100vh - 72px);
+    max-height: calc(100dvh - 72px);
     align-items: stretch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 24px 20px;
     background: white;
     box-shadow: var(--shadow-floating);
@@ -223,5 +232,7 @@
 
   .landingHeader .navigation {
     inset-block-start: 54px;
+    max-height: calc(100vh - 54px);
+    max-height: calc(100dvh - 54px);
   }
 }

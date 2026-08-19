@@ -3,12 +3,14 @@
   --sidebar-width: 280px;
   --sidebar-collapsed-width: 88px;
   min-height: 100vh;
+  min-height: 100dvh;
   padding-top: var(--app-header-height);
   background: var(--black-25);
 }
 
 .main {
   min-height: calc(100vh - var(--app-header-height));
+  min-height: calc(100dvh - var(--app-header-height));
   margin-left: var(--sidebar-width);
   transition: margin-left 180ms ease;
 }

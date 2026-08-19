@@ -25,6 +25,10 @@
   height: 20px;
 }
 
+.secondary .wordmark {
+  filter: brightness(0) invert(1);
+}
+
 .wordmarkOnly .mark {
   display: none;
 }
