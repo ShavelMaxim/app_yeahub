@@ -27,7 +27,7 @@
   margin-inline: auto;
 }
 
-.asideBrand>a {
+.asideBrand > a {
   --logo-mark-shadow: none;
 }
 
@@ -217,7 +217,7 @@
   line-height: 1.25;
 }
 
-.consents>p:first-child {
+.consents > p:first-child {
   margin: 0 0 7px;
   font-size: 14px;
   line-height: 1.3;
@@ -254,13 +254,13 @@
   line-height: 1;
 }
 
-.consentRow input:checked+.checkbox {
+.consentRow input:checked + .checkbox {
   border-color: var(--primary-700);
   color: white;
   background: var(--primary-700);
 }
 
-.consentRow input:focus-visible+.checkbox {
+.consentRow input:focus-visible + .checkbox {
   outline: 3px solid rgba(106, 90, 224, 0.2);
   outline-offset: 2px;
 }
@@ -430,7 +430,6 @@
 }
 
 @media (max-width: 480px) {
-
   .formWrap,
   .registerPage .formWrap {
     padding-inline: 10px;
