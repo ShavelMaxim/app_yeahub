@@ -167,7 +167,7 @@ export const useEditProfile = () => {
     }
 
     const failures: Array<{ label: string; error: unknown }> = [];
-    const perform = async <T,>(label: string, operation: () => Promise<T>) => {
+    const perform = async <T>(label: string, operation: () => Promise<T>) => {
       try {
         return { ok: true as const, value: await operation() };
       } catch (error) {

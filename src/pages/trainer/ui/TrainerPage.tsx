@@ -146,11 +146,7 @@ export default function TrainerPage() {
             {error}
           </div>
         )}
-        <Button
-          className={styles.startButton}
-          loading={isStarting}
-          onClick={start}
-        >
+        <Button className={styles.startButton} loading={isStarting} onClick={start}>
           Начать <span aria-hidden="true">→</span>
         </Button>
       </div>

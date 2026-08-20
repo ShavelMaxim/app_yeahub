@@ -1,5 +1,9 @@
 import { QuestionAccordion } from '@/entities/question';
-import { difficultyRanges, ratings, useQuestionCatalog } from '@/features/questions/filter-questions';
+import {
+  difficultyRanges,
+  ratings,
+  useQuestionCatalog,
+} from '@/features/questions/filter-questions';
 import { EmptyState, Pagination, Skeleton } from '@/shared/ui';
 import searchIcon from '@/shared/config/assets/icons/search.svg';
 import styles from './QuestionsPage.module.css';

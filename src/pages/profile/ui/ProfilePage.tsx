@@ -143,11 +143,7 @@ export default function ProfilePage() {
               </div>
             )}
             <div className={styles.formActions}>
-              <Button
-                type="submit"
-                disabled={isReadingAvatar}
-                loading={isSaving}
-              >
+              <Button type="submit" disabled={isReadingAvatar} loading={isSaving}>
                 Сохранить изменения
               </Button>
             </div>

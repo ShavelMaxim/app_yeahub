@@ -48,12 +48,10 @@ export const createUserUpdateBody = (
   return body;
 };
 
-export const createProfileUpdateBody = (
-  values: {
-    description: string;
-    skillIds: number[];
-  },
-): UpdateProfileRequest => {
+export const createProfileUpdateBody = (values: {
+  description: string;
+  skillIds: number[];
+}): UpdateProfileRequest => {
   return {
     description: values.description.trim(),
     profileSkills: values.skillIds.map(String),

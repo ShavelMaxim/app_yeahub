@@ -44,10 +44,7 @@ export default function AdminPage() {
             <h1>Административная панель</h1>
             <p>Создавайте и редактируйте данные платформы.</p>
           </div>
-          <Button
-            className={styles.headingButton}
-            onClick={openCreateEditor}
-          >
+          <Button className={styles.headingButton} onClick={openCreateEditor}>
             + Добавить {singular}
           </Button>
         </div>
