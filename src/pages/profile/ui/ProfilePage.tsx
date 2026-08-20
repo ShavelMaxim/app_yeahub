@@ -1,254 +1,26 @@
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { Button, Card, Input, Skeleton } from '@/shared/ui';
-import { setUser, useAuth } from '@/features/auth';
-import { useGetSkillsQuery, useGetSpecializationsQuery } from '@/entities/catalog';
-import {
-  createProfileUpdateBody,
-  createUserUpdateBody,
-  stripImageDataUrl,
-  useCreateProfileMutation,
-  useGetMeQuery,
-  useSetActiveProfileMutation,
-  useUpdateProfileMutation,
-  useUpdateUserMutation,
-} from '@/entities/user';
-import { cn, getApiErrorMessage } from '@/shared/lib';
-import type { Profile, ProfileSkill } from '@/entities/user';
+import { useEditProfile } from '@/features/profile/edit-profile';
+import { cn } from '@/shared/lib';
 import styles from './ProfilePage.module.css';
 
-const prepareAvatarData = (source: string): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => {
-      if (image.naturalWidth < 128 || image.naturalHeight < 128) {
-        reject(new Error('Минимальное разрешение изображения — 128×128 пикселей.'));
-        return;
-      }
-
-      const sourceSize = Math.min(image.naturalWidth, image.naturalHeight);
-      const outputSize = Math.min(sourceSize, 2048);
-      const sourceX = (image.naturalWidth - sourceSize) / 2;
-      const sourceY = (image.naturalHeight - sourceSize) / 2;
-      const canvas = document.createElement('canvas');
-      canvas.width = outputSize;
-      canvas.height = outputSize;
-      const context = canvas.getContext('2d');
-      if (!context) {
-        reject(new Error('Браузер не поддерживает обработку изображения.'));
-        return;
-      }
-
-      context.drawImage(
-        image,
-        sourceX,
-        sourceY,
-        sourceSize,
-        sourceSize,
-        0,
-        0,
-        outputSize,
-        outputSize,
-      );
-      resolve(canvas.toDataURL('image/png'));
-    };
-    image.onerror = () => reject(new Error('Выбранный файл не удалось открыть как изображение.'));
-    image.src = source;
-  });
-
 export default function ProfilePage() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { user: fallbackUser } = useAuth();
-  const { data, isLoading, refetch } = useGetMeQuery();
-  const user = data ?? fallbackUser;
-  const activeProfile =
-    user?.profiles?.find((profile: Profile) => profile.isActive) ?? user?.profiles?.[0];
-  const { data: specializations } = useGetSpecializationsQuery({ limit: 100 });
-  const { data: skills } = useGetSkillsQuery({ limit: 100 });
-  const [updateUser, userUpdate] = useUpdateUserMutation();
-  const [createProfile, profileCreate] = useCreateProfileMutation();
-  const [setActiveProfile, activeProfileUpdate] = useSetActiveProfileMutation();
-  const [updateProfile, profileUpdate] = useUpdateProfileMutation();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [avatarPreview, setAvatarPreview] = useState('');
-  const [avatarImage, setAvatarImage] = useState<string | null>(null);
-  const [isReadingAvatar, setIsReadingAvatar] = useState(false);
-  const [form, setForm] = useState({
-    username: '',
-    email: '',
-    city: '',
-    description: '',
-    specializationId: '',
-    skillIds: [] as number[],
-  });
-  const [notice, setNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const {
+    avatarPreview,
+    fileRef,
+    form,
+    isLoading,
+    isReadingAvatar,
+    isSaving,
+    notice,
+    setForm,
+    skills,
+    specializations,
+    submit,
+    toggleSkill,
+    uploadAvatarFile,
+  } = useEditProfile();
 
-  useEffect(() => {
-    if (!user) return;
-    setForm({
-      username: user.username ?? '',
-      email: user.email ?? '',
-      city: user.city ?? '',
-      description: activeProfile?.description ?? '',
-      specializationId: activeProfile?.specializationId?.toString() ?? '',
-      skillIds: activeProfile?.profileSkills?.map((skill: ProfileSkill) => skill.id) ?? [],
-    });
-    setAvatarPreview(user.avatarUrl ?? '');
-    setAvatarImage(null);
-  }, [activeProfile, user]);
-
-  const uploadAvatarFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    event.target.value = '';
-    if (
-      !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) ||
-      file.size > 5 * 1024 * 1024
-    ) {
-      setNotice({ type: 'error', text: 'Выберите изображение размером до 5 МБ.' });
-      return;
-    }
-
-    setNotice(null);
-    setIsReadingAvatar(true);
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const dataUrl = await prepareAvatarData(String(reader.result));
-        setAvatarPreview(dataUrl);
-        setAvatarImage(stripImageDataUrl(dataUrl));
-        setNotice({
-          type: 'success',
-          text: 'Фотография выбрана. Сохраните изменения профиля.',
-        });
-      } catch (error) {
-        setNotice({
-          type: 'error',
-          text: error instanceof Error ? error.message : 'Не удалось обработать изображение.',
-        });
-      } finally {
-        setIsReadingAvatar(false);
-      }
-    };
-    reader.onerror = () => {
-      setIsReadingAvatar(false);
-      setNotice({ type: 'error', text: 'Не удалось прочитать выбранный файл.' });
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const toggleSkill = (id: number) =>
-    setForm((current) => ({
-      ...current,
-      skillIds: current.skillIds.includes(id)
-        ? current.skillIds.filter((skillId) => skillId !== id)
-        : [...current.skillIds, id],
-    }));
-
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!user) return;
-    setNotice(null);
-    const specializationId = Number(form.specializationId);
-    const hasProfileData = Boolean(form.description.trim() || form.skillIds.length);
-    if (!activeProfile && hasProfileData && !specializationId) {
-      setNotice({
-        type: 'error',
-        text: 'Выберите специализацию, чтобы создать профиль и сохранить навыки.',
-      });
-      return;
-    }
-    try {
-      const userBody = createUserUpdateBody(user, {
-        username: form.username,
-        city: form.city,
-        avatarImage,
-      });
-      const failures: Array<{ label: string; error: unknown }> = [];
-      const perform = async <T,>(label: string, operation: () => Promise<T>) => {
-        try {
-          return { ok: true as const, value: await operation() };
-        } catch (error) {
-          failures.push({ label, error });
-          return { ok: false as const };
-        }
-      };
-      if (Object.keys(userBody).length > 0) {
-        await perform('данные пользователя', () =>
-          updateUser({ id: user.id, body: userBody }).unwrap(),
-        );
-      }
-      let targetProfile = activeProfile;
-
-      if (!activeProfile && specializationId) {
-        const created = await perform('новый профиль', () =>
-          createProfile({
-            userId: user.id,
-            profileType: 1,
-            specializationId,
-            markingWeight: 1,
-          }).unwrap(),
-        );
-
-        if (created.ok) {
-          const afterCreate = await perform('созданный профиль', () => refetch().unwrap());
-          if (afterCreate.ok) {
-            dispatch(setUser(afterCreate.value));
-            targetProfile = afterCreate.value.profiles?.find(
-              (profile: Profile) => profile.specializationId === specializationId,
-            );
-          }
-          if (!targetProfile) {
-            failures.push({
-              label: 'новый профиль',
-              error: new Error('API не вернул созданный профиль.'),
-            });
-          }
-        }
-      }
-
-      if (targetProfile) {
-        const updated = await perform('специализацию и навыки', () =>
-          updateProfile({
-            id: targetProfile.id,
-            body: createProfileUpdateBody(targetProfile, {
-              specializationId: specializationId || targetProfile.specializationId,
-              description: form.description,
-              skillIds: form.skillIds,
-            }),
-          }).unwrap(),
-        );
-
-        if (updated.ok && targetProfile.id !== activeProfile?.id) {
-          await perform('активную специализацию', () =>
-            setActiveProfile(targetProfile.id).unwrap(),
-          );
-        }
-      }
-
-      const refreshed = await refetch()
-        .unwrap()
-        .catch(() => undefined);
-      if (refreshed) dispatch(setUser(refreshed));
-
-      if (failures.length) {
-        const firstFailure = failures[0];
-        setNotice({
-          type: 'error',
-          text: `Не удалось сохранить ${failures.map(({ label }) => label).join(' и ')}. ${getApiErrorMessage(firstFailure.error)}`,
-        });
-        return;
-      }
-
-      navigate('/profile', { replace: true });
-    } catch (error) {
-      setNotice({ type: 'error', text: getApiErrorMessage(error) });
-    }
-  };
-
-  if (isLoading && !user)
+  if (isLoading)
     return (
       <section className={styles.loading}>
         <Skeleton lines={8} />
@@ -323,7 +95,7 @@ export default function ProfilePage() {
                     onChange={(e) => setForm({ ...form, specializationId: e.target.value })}
                   >
                     <option value="">Не выбрана</option>
-                    {specializations?.data.map((item) => (
+                    {specializations.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.title}
                       </option>
@@ -347,7 +119,7 @@ export default function ProfilePage() {
               <legend>Навыки</legend>
               <p>Выбери технологии, которые хочешь изучать.</p>
               <div>
-                {skills?.data.map((skill) => (
+                {skills.map((skill) => (
                   <label
                     key={skill.id}
                     className={cn(
@@ -374,12 +146,7 @@ export default function ProfilePage() {
               <Button
                 type="submit"
                 disabled={isReadingAvatar}
-                loading={
-                  userUpdate.isLoading ||
-                  profileUpdate.isLoading ||
-                  profileCreate.isLoading ||
-                  activeProfileUpdate.isLoading
-                }
+                loading={isSaving}
               >
                 Сохранить изменения
               </Button>

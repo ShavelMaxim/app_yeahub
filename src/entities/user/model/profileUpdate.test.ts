@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createProfileUpdateBody, createUserUpdateBody, stripImageDataUrl } from './profileUpdate';
-import type { Profile, User } from './types';
+import type { User } from './types';
 
 const user: User = {
   id: 'user-1',
@@ -11,15 +11,6 @@ const user: User = {
   country: 'Russia',
   birthday: '2000-01-01',
   address: 'Old address',
-};
-
-const profile: Profile = {
-  id: 'profile-1',
-  profileType: 1,
-  specializationId: 2,
-  description: 'Old description',
-  markingWeight: 1,
-  profileSkills: [{ id: 10, title: 'React' }],
 };
 
 describe('profile update payloads', () => {
@@ -52,37 +43,16 @@ describe('profile update payloads', () => {
     });
   });
 
-  it('sends a changed specialization when updating an existing profile', () => {
-    const body = createProfileUpdateBody(profile, {
-      specializationId: 3,
+  it('creates the exact UpdateProfileDto body', () => {
+    const body = createProfileUpdateBody({
       description: ' New description ',
       skillIds: [10, 11],
     });
 
-    expect(body).toMatchObject({
-      specializationId: 3,
+    expect(body).toEqual({
       description: 'New description',
       profileSkills: ['10', '11'],
     });
-    expect(body).not.toHaveProperty('id');
-  });
-
-  it('does not repeat an unchanged specialization', () => {
-    expect(
-      createProfileUpdateBody(profile, {
-        specializationId: profile.specializationId,
-        description: '',
-        skillIds: [],
-      }),
-    ).not.toHaveProperty('specializationId');
-  });
-
-  it('sets a specialization when an empty profile is completed for the first time', () => {
-    expect(
-      createProfileUpdateBody(
-        { ...profile, specializationId: 0 },
-        { specializationId: 3, description: '', skillIds: [] },
-      ),
-    ).toHaveProperty('specializationId', 3);
+    expect(body).not.toHaveProperty('specializationId');
   });
 });

@@ -5,12 +5,13 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
+import { getApiSession } from './sessionAdapter';
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: process.env.API_URL ?? 'https://api.yeatwork.ru',
   credentials: 'include',
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as { auth: { token: string | null } }).auth.token;
+  prepareHeaders: (headers) => {
+    const token = getApiSession().getAccessToken();
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
     }
@@ -34,10 +35,10 @@ const baseQueryWithSession: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
     const token = refreshData?.access_token ?? refreshData?.accessToken;
 
     if (token) {
-      api.dispatch({ type: 'auth/setToken', payload: token });
+      getApiSession().setAccessToken(token);
       result = await rawBaseQuery(args, api, extraOptions);
     } else {
-      api.dispatch({ type: 'auth/clearCredentials' });
+      getApiSession().clearSession();
     }
   }
   return result;

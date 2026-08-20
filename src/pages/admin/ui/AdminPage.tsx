@@ -1,143 +1,39 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button, Card, EmptyState, Input, Modal, Pagination, Skeleton } from '@/shared/ui';
-import {
-  useCreateSkillMutation,
-  useCreateSpecializationMutation,
-  useDeleteSkillMutation,
-  useDeleteSpecializationMutation,
-  useGetSkillsQuery,
-  useGetSpecializationByIdQuery,
-  useGetSpecializationsQuery,
-  useUpdateSkillMutation,
-  useUpdateSpecializationMutation,
-} from '@/entities/catalog';
+import { useCatalogManagement } from '@/features/admin/manage-catalog';
 import trash from '@/shared/config/assets/icons/trash.svg';
 import PencilSimple from '@/shared/config/assets/icons/PencilSimple.svg';
 import ArrowRight from '@/shared/config/assets/icons/ArrowRight.svg';
-import type { EntityPayload, Skill, Specialization } from '@/entities/catalog';
-import { getApiErrorMessage } from '@/shared/lib';
 import styles from './AdminPage.module.css';
 
-type EntityKind = 'specializations' | 'skills';
-type EditableEntity = Skill | Specialization;
-
 export default function AdminPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { specializationId } = useParams();
-  const isCreateRoute = location.pathname.endsWith('/specializations/new');
-  const isEditRoute = location.pathname.endsWith('/edit') && Boolean(specializationId);
-  const [kind, setKind] = useState<EntityKind>('specializations');
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [editor, setEditor] = useState<{ open: boolean; item: EditableEntity | null }>({
-    open: false,
-    item: null,
-  });
-  const [deleting, setDeleting] = useState<EditableEntity | null>(null);
-  const [form, setForm] = useState<EntityPayload>({ title: '', description: '' });
-  const [error, setError] = useState('');
-  const routeSpecialization = useGetSpecializationByIdQuery(Number(specializationId), {
-    skip: !isEditRoute || !specializationId,
-  });
-  const specs = useGetSpecializationsQuery({
+  const {
+    closeEditor,
+    confirmDelete,
+    deleting,
+    editor,
+    error,
+    filteredData,
+    form,
+    isDeleting,
+    isSaving,
+    kind,
+    openCreateEditor,
+    openEditEditor,
+    openEditor,
     page,
-    limit: 10,
-    title: kind === 'specializations' ? search || undefined : undefined,
-  });
-  const skills = useGetSkillsQuery({
-    page,
-    limit: 10,
-    title: kind === 'skills' ? search || undefined : undefined,
-  });
-  const [createSpec, createSpecState] = useCreateSpecializationMutation();
-  const [updateSpec, updateSpecState] = useUpdateSpecializationMutation();
-  const [deleteSpec, deleteSpecState] = useDeleteSpecializationMutation();
-  const [createSkill, createSkillState] = useCreateSkillMutation();
-  const [updateSkill, updateSkillState] = useUpdateSkillMutation();
-  const [deleteSkill, deleteSkillState] = useDeleteSkillMutation();
-
-  useEffect(() => {
-    if (isCreateRoute) {
-      setKind('specializations');
-      setForm({ title: '', description: '' });
-      setEditor({ open: true, item: null });
-      setError('');
-    } else if (isEditRoute && routeSpecialization.data) {
-      setKind('specializations');
-      setForm({
-        title: routeSpecialization.data.title,
-        description: routeSpecialization.data.description ?? '',
-      });
-      setEditor({ open: true, item: routeSpecialization.data });
-      setError('');
-    }
-  }, [isCreateRoute, isEditRoute, routeSpecialization.data]);
-
-  const query = kind === 'specializations' ? specs : skills;
-  const filteredData = useMemo(() => {
-    const items = query.data?.data ?? [];
-    if (!search) return items;
-    return items.filter((item) =>
-      `${item.title} ${item.description ?? ''}`.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [query.data?.data, search]);
-
-  const switchKind = (next: EntityKind) => {
-    setKind(next);
-    setPage(1);
-    setSearch('');
-    setError('');
-  };
-  const openEditor = (item: EditableEntity | null = null) => {
-    setForm({ title: item?.title ?? '', description: item?.description ?? '' });
-    setEditor({ open: true, item });
-    setError('');
-  };
-  const closeEditor = () => {
-    setEditor({ open: false, item: null });
-    if (isCreateRoute || isEditRoute) navigate('/admin', { replace: true });
-  };
-
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (form.title.trim().length < 2 || form.description.trim().length < 3) {
-      setError('Заполните название и описание.');
-      return;
-    }
-    try {
-      if (kind === 'specializations') {
-        if (editor.item) await updateSpec({ id: editor.item.id, body: form }).unwrap();
-        else await createSpec(form).unwrap();
-      } else if (editor.item) await updateSkill({ id: editor.item.id, body: form }).unwrap();
-      else await createSkill(form).unwrap();
-      closeEditor();
-    } catch (requestError) {
-      setError(getApiErrorMessage(requestError));
-    }
-  };
-
-  const confirmDelete = async () => {
-    if (!deleting) return;
-    setError('');
-    try {
-      if (kind === 'specializations') await deleteSpec(deleting.id).unwrap();
-      else await deleteSkill(deleting.id).unwrap();
-      setDeleting(null);
-    } catch (requestError) {
-      setError(getApiErrorMessage(requestError));
-    }
-  };
-
-  const title = kind === 'specializations' ? 'Специализации' : 'Навыки';
-  const singular = kind === 'specializations' ? 'специализацию' : 'навык';
-  const isSaving =
-    createSpecState.isLoading ||
-    updateSpecState.isLoading ||
-    createSkillState.isLoading ||
-    updateSkillState.isLoading;
-  const isDeleting = deleteSpecState.isLoading || deleteSkillState.isLoading;
+    query,
+    requestDelete,
+    search,
+    setDeleting,
+    setForm,
+    setPage,
+    setSearch,
+    singular,
+    submit,
+    switchKind,
+    title,
+  } = useCatalogManagement();
 
   return (
     <section className={styles.page}>
@@ -150,9 +46,7 @@ export default function AdminPage() {
           </div>
           <Button
             className={styles.headingButton}
-            onClick={() =>
-              kind === 'specializations' ? navigate('/admin/specializations/new') : openEditor()
-            }
+            onClick={openCreateEditor}
           >
             + Добавить {singular}
           </Button>
@@ -238,11 +132,7 @@ export default function AdminPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            onClick={() =>
-                              kind === 'specializations'
-                                ? navigate(`/admin/specializations/${item.id}/edit`)
-                                : openEditor(item)
-                            }
+                            onClick={() => openEditEditor(item)}
                             aria-label={`Редактировать ${item.title}`}
                           >
                             <img src={PencilSimple} alt="icon-pencil" />
@@ -250,10 +140,7 @@ export default function AdminPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            onClick={() => {
-                              setDeleting(item);
-                              setError('');
-                            }}
+                            onClick={() => requestDelete(item)}
                             aria-label={`Удалить ${item.title}`}
                           >
                             <img src={trash} alt="icon-trash" />

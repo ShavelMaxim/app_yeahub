@@ -1,6 +1,6 @@
 import { baseApi } from '@/shared/api';
 import type { Profile, User } from '../model/types';
-import type { ProfileUpdateBody, UserUpdateBody } from '../model/profileUpdate';
+import type { UpdateProfileRequest, UpdateUserRequest } from '../model/profileUpdate';
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,7 +8,7 @@ const userApi = baseApi.injectEndpoints({
       query: () => '/auth/profile',
       providesTags: ['Me'],
     }),
-    updateUser: builder.mutation<User, { id: string; body: UserUpdateBody }>({
+    updateUser: builder.mutation<User, { id: string; body: UpdateUserRequest }>({
       query: ({ id, body }) => ({ url: `/users/${id}`, method: 'PATCH', body }),
     }),
     createProfile: builder.mutation<
@@ -29,7 +29,7 @@ const userApi = baseApi.injectEndpoints({
       Profile,
       {
         id: string;
-        body: ProfileUpdateBody;
+        body: UpdateProfileRequest;
       }
     >({
       query: ({ id, body }) => ({ url: `/profiles/${id}`, method: 'PUT', body }),

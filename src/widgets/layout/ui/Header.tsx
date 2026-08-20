@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { clearCredentials, useAuth, useLogoutMutation } from '@/features/auth';
-import { baseApi } from '@/shared/api';
+import { useAuth, useEndSession, useLogoutMutation } from '@/features/auth';
 import { Logo } from '@/shared/ui';
 import sendSquareLeft from '@/shared/config/assets/icons/sendSquareLeft.svg';
 import accountArrowIcon from '@/shared/config/assets/icons/arrowMenuDown.svg';
@@ -15,9 +13,9 @@ interface HeaderProps {
 
 export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { token, user } = useAuth();
+  const { isSessionValid, user } = useAuth();
   const [logoutRequest] = useLogoutMutation();
-  const dispatch = useDispatch();
+  const endCurrentSession = useEndSession();
   const navigate = useNavigate();
 
   const closeMenu = () => setMenuOpen(false);
@@ -27,8 +25,7 @@ export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
     } catch {
       // Local logout must still work when the API is temporarily unavailable.
     }
-    dispatch(clearCredentials());
-    dispatch(baseApi.util.resetApiState());
+    endCurrentSession();
     closeMenu();
     navigate('/login', { replace: true });
   };
@@ -55,7 +52,7 @@ export const Header = ({ collapsed, onToggleSidebar }: HeaderProps) => {
 
       <div className={styles.accountArea}>
         <span className={styles.membership}>Free</span>
-        {token ? (
+        {isSessionValid ? (
           <div className={styles.accountMenu}>
             <button
               className={styles.accountButton}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hasAdminRole, isTokenExpired } from './token';
+import { getTokenExpiration, hasAdminRole, isTokenExpired } from './token';
 
 const createToken = (exp: number) => `header.${btoa(JSON.stringify({ exp }))}.signature`;
 
@@ -10,6 +10,10 @@ describe('token helpers', () => {
 
   it('accepts a token with a future expiration date', () => {
     expect(isTokenExpired(createToken(Math.floor(Date.now() / 1000) + 60))).toBe(false);
+  });
+
+  it('returns the token expiration timestamp', () => {
+    expect(getTokenExpiration(createToken(2_000_000_000))).toBe(2_000_000_000_000);
   });
 
   it('treats a malformed token as expired', () => {

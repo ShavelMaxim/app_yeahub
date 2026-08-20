@@ -1,6 +1,7 @@
-import type { Profile, User } from './types';
+import type { User } from './types';
 
-export interface UserUpdateBody {
+/** Request body from the OpenAPI UpdateUserDto schema. */
+export interface UpdateUserRequest {
   username?: string;
   country?: string;
   city?: string;
@@ -10,8 +11,8 @@ export interface UserUpdateBody {
   avatarImage?: string;
 }
 
-export interface ProfileUpdateBody extends Partial<Omit<Profile, 'id' | 'profileSkills'>> {
-  specializationId?: number;
+/** Request body from the OpenAPI UpdateProfileDto schema. */
+export interface UpdateProfileRequest {
   description: string;
   profileSkills: string[];
 }
@@ -24,8 +25,8 @@ export const stripImageDataUrl = (dataUrl: string): string => {
 export const createUserUpdateBody = (
   user: User,
   values: { username: string; city: string; avatarImage?: string | null },
-): UserUpdateBody => {
-  const body: UserUpdateBody = {};
+): UpdateUserRequest => {
+  const body: UpdateUserRequest = {};
   const username = values.username.trim();
   const city = values.city.trim();
 
@@ -48,18 +49,13 @@ export const createUserUpdateBody = (
 };
 
 export const createProfileUpdateBody = (
-  profile: Profile,
   values: {
-    specializationId: number;
     description: string;
     skillIds: number[];
   },
-): ProfileUpdateBody => {
+): UpdateProfileRequest => {
   return {
     description: values.description.trim(),
     profileSkills: values.skillIds.map(String),
-    ...(values.specializationId > 0 && profile.specializationId !== values.specializationId
-      ? { specializationId: values.specializationId }
-      : {}),
   };
 };

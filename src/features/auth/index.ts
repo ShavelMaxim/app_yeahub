@@ -12,5 +12,7 @@ export {
   setUser,
 } from './model/authSlice';
 export type { AuthState } from './model/authSlice';
-export { useAuth } from './model/selectors';
+export { endSession, useEndSession } from './model/endSession';
+export { selectIsSessionValid, useAuth } from './model/selectors';
+export { useAuthForm, type AuthMode } from './model/useAuthForm';
 export type { AuthResponse, LoginRequest, RefreshResponse, RegisterRequest } from './model/types';
