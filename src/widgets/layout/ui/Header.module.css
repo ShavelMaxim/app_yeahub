@@ -1,0 +1,197 @@
+.header {
+  position: fixed;
+  z-index: 40;
+  inset: 0 0 auto;
+  display: flex;
+  height: var(--app-header-height);
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border-bottom: 1px solid var(--black-50);
+}
+
+.brandArea {
+  display: flex;
+  width: var(--sidebar-width);
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 0 20px;
+  border-right: 1px solid var(--black-50);
+  transition: width 180ms ease;
+}
+
+.sidebarToggle {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: var(--surface);
+}
+
+.sidebarArrow,
+.sidebarArrowExpanded {
+  transition: transform 180ms ease;
+}
+
+.sidebarArrowExpanded {
+  transform: rotate(180deg);
+}
+
+.accountArea {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-right: 20px;
+}
+
+.membership {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  color: var(--surface);
+  background: var(--primary-500);
+  clip-path: polygon(
+    50% 0%,
+    62% 10%,
+    78% 8%,
+    87% 22%,
+    100% 30%,
+    96% 48%,
+    100% 65%,
+    85% 75%,
+    80% 92%,
+    61% 90%,
+    50% 100%,
+    38% 90%,
+    20% 92%,
+    15% 75%,
+    0% 65%,
+    4% 48%,
+    0% 30%,
+    13% 22%,
+    22% 8%,
+    38% 10%
+  );
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.accountMenu {
+  position: relative;
+}
+
+.accountButton,
+.login {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  padding: 0;
+  color: var(--black-900);
+  background: transparent;
+}
+
+.accountArrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 160ms ease;
+}
+
+.accountArrowOpen {
+  transform: rotate(180deg);
+}
+
+.login {
+  min-height: 40px;
+  padding-inline: 8px;
+}
+
+.avatar {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--primary-200);
+  border-radius: 8px;
+  color: var(--primary-700);
+  background: var(--primary-100);
+  font-weight: var(--font-weight-semibold);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  display: flex;
+  width: 260px;
+  max-height: calc(100vh - var(--app-header-height) - 28px);
+  max-height: calc(100dvh - var(--app-header-height) - 28px);
+  flex-direction: column;
+  gap: 5px;
+  padding: 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border: 1px solid var(--black-50);
+  border-radius: 12px;
+  box-shadow: var(--shadow-floating);
+}
+
+.popover > span {
+  margin-bottom: 10px;
+  color: var(--black-600);
+  font-size: var(--font-size-body-1);
+}
+
+.popover a,
+.popover button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px;
+  color: var(--black-900);
+  background: transparent;
+  text-align: left;
+}
+
+.popover a:hover,
+.popover button:hover {
+  background: var(--black-25);
+}
+
+@media (max-width: 900px) {
+  .brandArea {
+    width: auto;
+    gap: 20px;
+    border-right: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .accountArea {
+    gap: 9px;
+    padding-right: 12px;
+  }
+
+  .brandArea {
+    gap: 12px;
+    padding-left: 12px;
+  }
+
+  .accountButton > span:first-child {
+    display: none;
+  }
+
+  .membership {
+    width: 32px;
+    height: 32px;
+  }
+}

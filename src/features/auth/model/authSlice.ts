@@ -18,7 +18,10 @@ export interface AuthState {
   user: User | null;
 }
 
-const initialState: AuthState = { token: readStoredToken(), user: null };
+const initialState: AuthState = {
+  token: readStoredToken(),
+  user: null,
+};
 
 const authSlice = createSlice({
   name: 'auth',
@@ -26,11 +29,15 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action: PayloadAction<AuthResponse>) => {
       state.token = action.payload.access_token;
-      state.user = action.payload.user;
+      state.user = action.payload.user ?? null;
       localStorage.setItem(TOKEN_KEY, action.payload.access_token);
     },
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
+    },
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+      localStorage.setItem(TOKEN_KEY, action.payload);
     },
     clearCredentials: (state) => {
       state.token = null;
@@ -40,5 +47,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setUser, clearCredentials } = authSlice.actions;
+export const { setCredentials, setToken, setUser, clearCredentials } = authSlice.actions;
 export const authReducer = authSlice.reducer;

@@ -1,0 +1,4 @@
+.routeLoader {
+  composes: container from './styles/layout.module.css';
+  padding-block: 120px;
+}

@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
-import { hasAdminRole, isTokenExpired } from '@/shared/lib';
+import { selectIsSessionValid } from '@/features/auth';
+import { hasAdminRole } from '@/shared/lib';
 import { EmptyState, Skeleton } from '@/shared/ui';
+import styles from './ProtectedRoute.module.css';
 
 export const ProtectedRoute = ({
   children,
@@ -11,16 +13,17 @@ export const ProtectedRoute = ({
   children: ReactNode;
   admin?: boolean;
 }) => {
-  const { token, user } = useAppSelector((state) => state.auth);
+  const user = useAppSelector((state) => state.auth.user);
+  const isSessionValid = useAppSelector(selectIsSessionValid);
   const location = useLocation();
 
-  if (!token || isTokenExpired(token)) {
+  if (!isSessionValid) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
   if (admin && !user) {
     return (
-      <section className="page-section container">
+      <section className={styles.page}>
         <Skeleton lines={6} />
       </section>
     );
@@ -28,7 +31,7 @@ export const ProtectedRoute = ({
 
   if (admin && !hasAdminRole(user?.userRoles)) {
     return (
-      <section className="page-section container">
+      <section className={styles.page}>
         <EmptyState
           icon="🔒"
           title="Недостаточно прав"

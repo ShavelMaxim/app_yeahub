@@ -1,102 +1,154 @@
-import { useState } from 'react';
-import { Button, Card, EmptyState, Skeleton } from '@/shared/ui';
-import { useGetPublicQuestionsQuery } from '@/entities/question';
+import { Link } from 'react-router-dom';
+import { difficultyRanges, useInterviewSettings } from '@/features/interview/configure-interview';
+import { Button, EmptyState, Skeleton } from '@/shared/ui';
+import styles from './TrainerPage.module.css';
 
 export default function TrainerPage() {
-  const { data, isLoading, isError } = useGetPublicQuestionsQuery({ page: 1, limit: 5 });
-  const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
-  const [known, setKnown] = useState(0);
-  const questions = data?.data ?? [];
-  const question = questions[index];
-
-  const answer = (didKnow: boolean) => {
-    if (didKnow) setKnown((value) => value + 1);
-    setRevealed(false);
-    setIndex((value) => value + 1);
-  };
-
-  if (isLoading)
-    return (
-      <section className="page-section container container--narrow">
-        <Skeleton lines={7} />
-      </section>
-    );
-  if (isError || !questions.length)
-    return (
-      <section className="page-section container">
-        <EmptyState
-          icon="!"
-          title="Тренировка пока недоступна"
-          description="Не удалось получить вопросы от API. Попробуйте позже."
-        />
-      </section>
-    );
-  if (index >= questions.length)
-    return (
-      <section className="page-section container container--narrow">
-        <Card className="trainer-result">
-          <span className="trainer-result__icon">🏁</span>
-          <h1>Тренировка завершена</h1>
-          <p>
-            Уверенных ответов:{' '}
-            <strong>
-              {known} из {questions.length}
-            </strong>
-          </p>
-          <Button
-            onClick={() => {
-              setIndex(0);
-              setKnown(0);
-            }}
-          >
-            Пройти ещё раз
-          </Button>
-        </Card>
-      </section>
-    );
+  const {
+    availableSkills,
+    chooseSpecialization,
+    difficulty,
+    error,
+    isCatalogError,
+    isLoadingSkills,
+    isLoadingSpecializations,
+    isStarting,
+    limit,
+    mode,
+    setDifficulty,
+    setLimit,
+    setMode,
+    skillIds,
+    specializations,
+    specializationId,
+    start,
+    toggleSkill,
+  } = useInterviewSettings();
 
   return (
-    <section className="page-section trainer-page">
-      <div className="container container--narrow">
-        <div className="trainer-progress">
-          <span>
-            Вопрос {index + 1} из {questions.length}
-          </span>
-          <div className="progress">
-            <span style={{ width: `${((index + 1) / questions.length) * 100}%` }} />
+    <section className={styles.page}>
+      <nav className={styles.breadcrumbs} aria-label="Хлебные крошки">
+        <Link to="/">Главная</Link>
+        <span aria-hidden="true">›</span>
+        <span>Тренажёр</span>
+      </nav>
+      <div className={styles.setupCard}>
+        <h1>Собеседование</h1>
+        <div className={styles.setupGrid}>
+          <div>
+            <fieldset className={styles.fieldset}>
+              <legend>Специализация</legend>
+              <div className={styles.chips}>
+                {isLoadingSpecializations ? (
+                  <Skeleton className={styles.chipSkeleton} lines={3} />
+                ) : (
+                  specializations.map((item) => (
+                    <button
+                      className={specializationId === item.id ? styles.selected : ''}
+                      type="button"
+                      key={item.id}
+                      onClick={() => chooseSpecialization(item.id)}
+                    >
+                      {item.title}
+                    </button>
+                  ))
+                )}
+              </div>
+            </fieldset>
+            <fieldset className={styles.fieldset}>
+              <legend>Категории вопросов</legend>
+              <div className={styles.chips}>
+                {isLoadingSkills ? (
+                  <Skeleton className={styles.chipSkeleton} lines={4} />
+                ) : (
+                  availableSkills.map((skill) => (
+                    <button
+                      className={skillIds.includes(skill.id) ? styles.selected : ''}
+                      type="button"
+                      key={skill.id}
+                      onClick={() => toggleSkill(skill.id)}
+                    >
+                      {skill.imageSrc && <img src={skill.imageSrc} alt="" aria-hidden="true" />}
+                      {skill.title}
+                    </button>
+                  ))
+                )}
+              </div>
+            </fieldset>
+          </div>
+
+          <div className={styles.settings}>
+            <fieldset className={styles.fieldset}>
+              <legend>Уровень сложности</legend>
+              <div className={styles.chips}>
+                {difficultyRanges.map((range) => (
+                  <button
+                    className={difficulty === range ? styles.selected : ''}
+                    type="button"
+                    key={range}
+                    onClick={() => setDifficulty(range)}
+                  >
+                    {range.replace('-', '–')}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className={styles.fieldset}>
+              <legend>Выберите режим</legend>
+              <div className={styles.chips}>
+                <button
+                  className={mode === 'repeat' ? styles.selected : ''}
+                  type="button"
+                  onClick={() => setMode('repeat')}
+                >
+                  Повторение
+                </button>
+                <button
+                  className={mode === 'new' ? styles.selected : ''}
+                  type="button"
+                  onClick={() => setMode('new')}
+                >
+                  Только новые
+                </button>
+                <button
+                  className={mode === 'random' ? styles.selected : ''}
+                  type="button"
+                  onClick={() => setMode('random')}
+                >
+                  Случайные
+                </button>
+              </div>
+            </fieldset>
+            <fieldset className={styles.fieldset}>
+              <legend>Количество вопросов</legend>
+              <div className={styles.counter}>
+                <button type="button" onClick={() => setLimit((value) => Math.max(5, value - 5))}>
+                  −
+                </button>
+                <span>{limit}</span>
+                <button type="button" onClick={() => setLimit((value) => Math.min(50, value + 5))}>
+                  +
+                </button>
+              </div>
+            </fieldset>
           </div>
         </div>
-        <Card className="trainer-card">
-          <div className="question-card__top">
-            <span className="tag tag--purple">{question.questionSkills?.[0]?.title ?? 'IT'}</span>
-            <span>Сложность {question.complexity ?? question.rate ?? '—'}</span>
+        {isCatalogError && (
+          <EmptyState
+            className={styles.catalogError}
+            icon="!"
+            title="Не удалось загрузить часть настроек"
+            description="Повторите попытку позже или запустите тренажёр с параметрами по умолчанию."
+          />
+        )}
+        {error && (
+          <div className={styles.requestError} role="alert">
+            {error}
           </div>
-          <h1>{question.title}</h1>
-          {question.description && <p>{question.description}</p>}
-          {revealed ? (
-            <div className="answer">
-              <h2>Ответ</h2>
-              <p>
-                {question.longAnswer ||
-                  question.shortAnswer ||
-                  'Ответ будет добавлен редакторами YeaHub.'}
-              </p>
-            </div>
-          ) : (
-            <Button size="large" onClick={() => setRevealed(true)}>
-              Показать ответ
-            </Button>
-          )}
-          {revealed && (
-            <div className="trainer-actions">
-              <Button variant="secondary" onClick={() => answer(false)}>
-                Нужно повторить
-              </Button>
-              <Button onClick={() => answer(true)}>Знаю ответ</Button>
-            </div>
-          )}
-        </Card>
+        )}
+        <Button className={styles.startButton} loading={isStarting} onClick={start}>
+          Начать <span aria-hidden="true">→</span>
+        </Button>
       </div>
     </section>
   );

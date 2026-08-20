@@ -8,7 +8,14 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      include: ['src/shared/ui/**/*.{ts,tsx}', 'src/features/**/*.{ts,tsx}'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.stories.{ts,tsx}',
+        'src/**/*.test.{ts,tsx}',
+        'src/**/index.ts',
+        'src/**/*.d.ts',
+        'src/index.tsx',
+      ],
     },
   },
   resolve: { alias: { '@': new URL('./src', import.meta.url).pathname } },

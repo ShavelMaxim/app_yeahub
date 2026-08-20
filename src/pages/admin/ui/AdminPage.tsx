@@ -1,134 +1,71 @@
-import { useMemo, useState, type FormEvent } from 'react';
-import { Button, Card, EmptyState, Input, Modal, Skeleton } from '@/shared/ui';
-import {
-  useCreateSkillMutation,
-  useCreateSpecializationMutation,
-  useDeleteSkillMutation,
-  useDeleteSpecializationMutation,
-  useGetSkillsQuery,
-  useGetSpecializationsQuery,
-  useUpdateSkillMutation,
-  useUpdateSpecializationMutation,
-} from '@/entities/catalog';
-import type { EntityPayload, Skill, Specialization } from '@/entities/catalog';
-import { getApiErrorMessage } from '@/shared/lib';
-
-type EntityKind = 'specializations' | 'skills';
-type EditableEntity = Skill | Specialization;
+import { Link } from 'react-router-dom';
+import { Button, Card, EmptyState, Input, Modal, Pagination, Skeleton } from '@/shared/ui';
+import { useCatalogManagement } from '@/features/admin/manage-catalog';
+import trash from '@/shared/config/assets/icons/trash.svg';
+import PencilSimple from '@/shared/config/assets/icons/PencilSimple.svg';
+import ArrowRight from '@/shared/config/assets/icons/ArrowRight.svg';
+import styles from './AdminPage.module.css';
 
 export default function AdminPage() {
-  const [kind, setKind] = useState<EntityKind>('specializations');
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [editor, setEditor] = useState<{ open: boolean; item: EditableEntity | null }>({
-    open: false,
-    item: null,
-  });
-  const [deleting, setDeleting] = useState<EditableEntity | null>(null);
-  const [form, setForm] = useState<EntityPayload>({ title: '', description: '' });
-  const [error, setError] = useState('');
-  const specs = useGetSpecializationsQuery({ page, limit: 10 });
-  const skills = useGetSkillsQuery({
+  const {
+    closeEditor,
+    confirmDelete,
+    deleting,
+    editor,
+    error,
+    filteredData,
+    form,
+    isDeleting,
+    isSaving,
+    kind,
+    openCreateEditor,
+    openEditEditor,
+    openEditor,
     page,
-    limit: 10,
-    title: kind === 'skills' ? search || undefined : undefined,
-  });
-  const [createSpec, createSpecState] = useCreateSpecializationMutation();
-  const [updateSpec, updateSpecState] = useUpdateSpecializationMutation();
-  const [deleteSpec, deleteSpecState] = useDeleteSpecializationMutation();
-  const [createSkill, createSkillState] = useCreateSkillMutation();
-  const [updateSkill, updateSkillState] = useUpdateSkillMutation();
-  const [deleteSkill, deleteSkillState] = useDeleteSkillMutation();
-
-  const query = kind === 'specializations' ? specs : skills;
-  const filteredData = useMemo(() => {
-    const items = query.data?.data ?? [];
-    if (!search) return items;
-    return items.filter((item) =>
-      `${item.title} ${item.description ?? ''}`.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [query.data?.data, search]);
-
-  const switchKind = (next: EntityKind) => {
-    setKind(next);
-    setPage(1);
-    setSearch('');
-    setError('');
-  };
-  const openEditor = (item: EditableEntity | null = null) => {
-    setForm({ title: item?.title ?? '', description: item?.description ?? '' });
-    setEditor({ open: true, item });
-    setError('');
-  };
-  const closeEditor = () => setEditor({ open: false, item: null });
-
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (form.title.trim().length < 2 || form.description.trim().length < 3) {
-      setError('Заполните название и описание.');
-      return;
-    }
-    try {
-      if (kind === 'specializations') {
-        if (editor.item) await updateSpec({ id: editor.item.id, body: form }).unwrap();
-        else await createSpec(form).unwrap();
-      } else if (editor.item) await updateSkill({ id: editor.item.id, body: form }).unwrap();
-      else await createSkill(form).unwrap();
-      closeEditor();
-    } catch (requestError) {
-      setError(getApiErrorMessage(requestError));
-    }
-  };
-
-  const confirmDelete = async () => {
-    if (!deleting) return;
-    setError('');
-    try {
-      if (kind === 'specializations') await deleteSpec(deleting.id).unwrap();
-      else await deleteSkill(deleting.id).unwrap();
-      setDeleting(null);
-    } catch (requestError) {
-      setError(getApiErrorMessage(requestError));
-    }
-  };
-
-  const title = kind === 'specializations' ? 'Специализации' : 'Навыки';
-  const singular = kind === 'specializations' ? 'специализацию' : 'навык';
-  const isSaving =
-    createSpecState.isLoading ||
-    updateSpecState.isLoading ||
-    createSkillState.isLoading ||
-    updateSkillState.isLoading;
-  const isDeleting = deleteSpecState.isLoading || deleteSkillState.isLoading;
+    query,
+    requestDelete,
+    search,
+    setDeleting,
+    setForm,
+    setPage,
+    setSearch,
+    singular,
+    submit,
+    switchKind,
+    title,
+  } = useCatalogManagement();
 
   return (
-    <section className="page-section admin-page">
-      <div className="container">
-        <div className="dashboard-heading">
+    <section className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.heading}>
           <div>
-            <span className="eyebrow">Управление контентом</span>
+            <span className={styles.eyebrow}>Управление контентом</span>
             <h1>Административная панель</h1>
             <p>Создавайте и редактируйте данные платформы.</p>
           </div>
-          <Button onClick={() => openEditor()}>+ Добавить {singular}</Button>
+          <Button className={styles.headingButton} onClick={openCreateEditor}>
+            + Добавить {singular}
+          </Button>
         </div>
-        <Card className="admin-card">
-          <div className="admin-toolbar">
-            <div className="tabs" role="tablist">
+        <Card className={styles.card}>
+          <div className={styles.toolbar}>
+            <div className={styles.tabs} role="tablist">
               <button
-                className={kind === 'specializations' ? 'active' : ''}
+                className={kind === 'specializations' ? styles.active : undefined}
                 onClick={() => switchKind('specializations')}
               >
                 Специализации
               </button>
               <button
-                className={kind === 'skills' ? 'active' : ''}
+                className={kind === 'skills' ? styles.active : undefined}
                 onClick={() => switchKind('skills')}
               >
                 Навыки
               </button>
             </div>
             <Input
+              className={styles.search}
               label="Поиск"
               aria-label="Поиск"
               value={search}
@@ -137,34 +74,36 @@ export default function AdminPage() {
             />
           </div>
           {error && !editor.open && (
-            <div className="alert alert--error" role="alert">
+            <div className={styles.error} role="alert">
               {error}
             </div>
           )}
           {query.isLoading ? (
-            <Skeleton lines={8} />
+            <Skeleton className={styles.contentState} lines={8} />
           ) : query.isError ? (
             <EmptyState
+              className={styles.contentState}
               icon="!"
               title="Данные не загрузились"
               description="Проверьте соединение с API и права аккаунта."
             />
           ) : !filteredData.length ? (
             <EmptyState
+              className={styles.contentState}
               title={`${title} не найдены`}
               description="Измените запрос или создайте первую запись."
               action={<Button onClick={() => openEditor()}>Добавить</Button>}
             />
           ) : (
-            <div className="table-scroll">
-              <table>
+            <div className={styles.tableScroll}>
+              <table className={styles.table}>
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>Название</th>
                     <th>Описание</th>
                     <th>
-                      <span className="visually-hidden">Действия</span>
+                      <span className={styles.visuallyHidden}>Действия</span>
                     </th>
                   </tr>
                 </thead>
@@ -177,25 +116,31 @@ export default function AdminPage() {
                       </td>
                       <td>{item.description || '—'}</td>
                       <td>
-                        <div className="table-actions">
+                        <div className={styles.tableActions}>
+                          {kind === 'specializations' && (
+                            <Link
+                              className={styles.detailsLink}
+                              to={`/admin/specializations/${item.id}`}
+                              aria-label={`Открыть специализацию ${item.title}`}
+                            >
+                              <img src={ArrowRight} alt="icon-arrow" />
+                            </Link>
+                          )}
                           <Button
                             variant="ghost"
                             size="small"
-                            onClick={() => openEditor(item)}
+                            onClick={() => openEditEditor(item)}
                             aria-label={`Редактировать ${item.title}`}
                           >
-                            ✎
+                            <img src={PencilSimple} alt="icon-pencil" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="small"
-                            onClick={() => {
-                              setDeleting(item);
-                              setError('');
-                            }}
+                            onClick={() => requestDelete(item)}
                             aria-label={`Удалить ${item.title}`}
                           >
-                            ⌫
+                            <img src={trash} alt="icon-trash" />
                           </Button>
                         </div>
                       </td>
@@ -205,20 +150,11 @@ export default function AdminPage() {
               </table>
             </div>
           )}
-          <div className="pagination">
-            <button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>
-              ← Назад
-            </button>
-            <span>
-              Страница {page} · всего {query.data?.total ?? 0}
-            </span>
-            <button
-              disabled={!query.data || page * 10 >= query.data.total}
-              onClick={() => setPage((value) => value + 1)}
-            >
-              Вперёд →
-            </button>
-          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={Math.ceil((query.data?.total ?? 0) / 10)}
+            onPageChange={setPage}
+          />
         </Card>
       </div>
 
@@ -245,9 +181,9 @@ export default function AdminPage() {
             placeholder="Например, React"
             autoFocus
           />
-          <label className="field">
-            <span className="field__label">Описание</span>
-            <span className="field__control">
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Описание</span>
+            <span className={styles.fieldControl}>
               <textarea
                 rows={5}
                 value={form.description}
@@ -257,7 +193,7 @@ export default function AdminPage() {
             </span>
           </label>
           {error && (
-            <div className="alert alert--error" role="alert">
+            <div className={styles.error} role="alert">
               {error}
             </div>
           )}
@@ -282,7 +218,7 @@ export default function AdminPage() {
           Запись <strong>«{deleting?.title}»</strong> будет удалена без возможности восстановления.
         </p>
         {error && (
-          <div className="alert alert--error" role="alert">
+          <div className={styles.error} role="alert">
             {error}
           </div>
         )}

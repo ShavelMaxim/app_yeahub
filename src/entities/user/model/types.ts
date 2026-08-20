@@ -27,12 +27,15 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   phone?: string;
   country?: string;
   city?: string;
-  birthday?: string;
+  birthday?: string | null;
   address?: string;
   avatarUrl?: string;
+  avatarImage?: string | null;
   isVerified?: boolean;
   userRoles?: Role[];
   profiles?: Profile[];

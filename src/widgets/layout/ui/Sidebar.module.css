@@ -1,0 +1,204 @@
+.sidebar {
+  position: fixed;
+  z-index: 30;
+  top: var(--app-header-height);
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: var(--sidebar-width);
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 34px 20px 20px;
+  background: var(--surface);
+  border-right: 1px solid var(--black-50);
+  transition:
+    width 180ms ease,
+    transform 180ms ease;
+}
+
+.navigation {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.navItem,
+.groupButton {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--black-800);
+  background: transparent;
+  font-size: var(--font-size-body-3);
+  line-height: var(--line-height-body-3);
+  text-align: left;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.navItem:hover,
+.groupButton:hover {
+  background: var(--black-25);
+}
+
+.navItem.active {
+  color: var(--primary-700);
+  background: var(--primary-100);
+}
+
+.navIcon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  object-fit: contain;
+}
+
+.active .navIcon {
+  filter: invert(20%) sepia(99%) saturate(7197%) hue-rotate(265deg) brightness(95%);
+}
+
+.label {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.group {
+  border-radius: 14px;
+}
+
+.group:has(.active) {
+  padding: 4px;
+  background: var(--black-25);
+}
+
+.group:has(.active) .groupButton {
+  padding-inline: 8px;
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 2px;
+}
+
+.nested {
+  min-height: 43px;
+  background: var(--surface);
+}
+
+.chevron {
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 150ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(225deg) translate(-1px, -1px);
+}
+
+.support {
+  display: flex;
+  min-height: 48px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--surface);
+  background: var(--primary-700);
+  font-size: var(--font-size-body-3);
+}
+
+.support:hover {
+  background: var(--primary-800);
+}
+
+.support img {
+  width: 20px;
+  height: 20px;
+}
+
+.collapsed {
+  width: var(--sidebar-collapsed-width);
+  padding-inline: 16px;
+}
+
+.collapsed .label,
+.collapsed .chevron {
+  display: none;
+}
+
+.collapsed .navItem,
+.collapsed .groupButton {
+  justify-content: center;
+  padding-inline: 8px;
+}
+
+.collapsed .group:has(.active) {
+  padding: 0;
+  background: transparent;
+}
+
+.collapsed .submenu {
+  gap: 6px;
+}
+
+.collapsed .support {
+  padding-inline: 8px;
+}
+
+.backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .sidebar,
+  .collapsed {
+    width: min(280px, calc(100vw - 48px));
+    padding-inline: 20px;
+    transform: translateX(-105%);
+    box-shadow: var(--shadow-sidebar);
+  }
+
+  .mobileOpen {
+    transform: translateX(0);
+  }
+
+  .collapsed .label,
+  .collapsed .chevron {
+    display: initial;
+  }
+
+  .collapsed .navItem,
+  .collapsed .groupButton {
+    justify-content: flex-start;
+    padding-inline: 12px;
+  }
+
+  .backdropVisible {
+    position: fixed;
+    z-index: 29;
+    inset: var(--app-header-height) 0 0;
+    display: block;
+    border: 0;
+    background: var(--overlay);
+  }
+}

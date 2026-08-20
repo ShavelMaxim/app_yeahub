@@ -1,0 +1,227 @@
+.container {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.containerNarrow {
+  width: min(820px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.pageSection {
+  padding: 72px 0 100px;
+  min-height: 62vh;
+}
+
+.section {
+  padding-block: 110px;
+}
+
+.sectionSoft {
+  background: var(--soft);
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  margin-top: 42px;
+}
+
+.textLink {
+  color: var(--primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.eyebrow {
+  display: inline-block;
+  color: var(--primary);
+  font-size: var(--font-size-body-1);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-body-1);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 15px;
+}
+
+.eyebrowLight {
+  color: #dcd6ff;
+}
+
+.sectionHeading {
+  width: min(700px, 100%);
+  text-align: center;
+  margin: 0 auto 52px;
+}
+
+.sectionHeading h2,
+.pageHeading h1 {
+  font-size: var(--font-size-headline-2);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-headline-2);
+  margin-bottom: 15px;
+}
+
+.sectionHeading p,
+.pageHeading p {
+  font-size: var(--font-size-body-4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-body-4);
+  margin-bottom: 0;
+}
+
+.pageHeading {
+  margin-bottom: 42px;
+}
+
+.dashboardHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: flex-end;
+  margin-bottom: 42px;
+}
+
+.dashboardHeading h1 {
+  font-size: var(--font-size-headline-2);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-headline-2);
+  margin-bottom: 10px;
+}
+
+.dashboardHeading p {
+  font-size: var(--font-size-body-3);
+  line-height: var(--line-height-body-3);
+}
+
+.dashboardHeading p {
+  margin-bottom: 0;
+}
+
+.pageBackground {
+  background: #faf9fc;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-size: var(--font-size-body-1);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-body-1);
+}
+
+.tagPurple {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: var(--font-size-body-2);
+  line-height: var(--line-height-body-2);
+}
+
+.alertError {
+  color: #a32738;
+  background: #fff0f2;
+  border: 1px solid #ffd2d8;
+}
+
+.alertSuccess {
+  color: #176e49;
+  background: #eaf9f1;
+  border: 1px solid #c5ead7;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #e1ddff, #bcb4ef);
+  color: var(--primary-dark);
+  font-weight: var(--font-weight-semibold);
+}
+
+.avatarSmall {
+  width: 30px;
+  height: 30px;
+  font-size: var(--font-size-body-1);
+  line-height: var(--line-height-body-1);
+}
+
+.avatarLarge {
+  width: 104px;
+  height: 104px;
+  font-size: var(--font-size-headline-3);
+  line-height: var(--line-height-headline-3);
+}
+
+.progress {
+  height: 7px;
+  border-radius: 10px;
+  background: #ece9f2;
+  overflow: hidden;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), #9589ed);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 28px;
+  color: var(--muted);
+  font-size: var(--font-size-body-1);
+  line-height: var(--line-height-body-1);
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pagination button:disabled {
+  color: #bbb7c4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+  .container,
+  .containerNarrow {
+    width: min(100% - 30px, 680px);
+  }
+
+  .section {
+    padding-block: 80px;
+  }
+
+  .dashboardHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 560px) {
+  .container,
+  .containerNarrow {
+    width: calc(100% - 24px);
+  }
+
+  .pageSection {
+    padding-block: 48px 70px;
+  }
+}

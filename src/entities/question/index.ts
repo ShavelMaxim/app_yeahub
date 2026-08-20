@@ -1,2 +1,13 @@
-export { useGetPublicQuestionsQuery } from './api/questionApi';
-export type { Question, QuestionSkill } from './model/types';
+export {
+  useGetPublicQuestionsQuery,
+  useLazyGetPublicQuestionsQuery,
+  useGetPublicQuestionByIdQuery,
+} from './api/questionApi';
+export { QuestionAccordion } from './ui/QuestionAccordion';
+export { RichTextContent } from './ui/RichTextContent';
+export type {
+  Question,
+  QuestionAuthor,
+  QuestionSkill,
+  QuestionSpecialization,
+} from './model/types';

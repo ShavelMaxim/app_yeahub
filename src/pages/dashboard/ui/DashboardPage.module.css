@@ -1,0 +1,50 @@
+.page {
+  position: relative;
+  min-height: 800px;
+  padding: 28px 20px 70px;
+  background: var(--black-25);
+}
+
+.page h1 {
+  margin: 0;
+  color: var(--black-800);
+  font-size: var(--font-size-headline-2);
+  font-weight: 400;
+}
+
+.placeholder {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  transform: translate(-35%, -50%);
+  color: var(--black-300);
+  text-align: center;
+}
+
+.placeholder > span {
+  color: var(--primary-300);
+  font-size: 72px;
+}
+
+.placeholder p {
+  margin: 0;
+  color: var(--black-300);
+  font-size: var(--font-size-body-3);
+  line-height: 1.4;
+}
+
+@media (max-width: 700px) {
+  .page {
+    min-height: 650px;
+  }
+
+  .placeholder {
+    left: 50%;
+    width: calc(100% - 40px);
+    flex-direction: column;
+    transform: translate(-50%, -50%);
+  }
+}

@@ -1,0 +1,57 @@
+.appShell {
+  --app-header-height: 74px;
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 88px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: var(--app-header-height);
+  background: var(--black-25);
+}
+
+.main {
+  min-height: calc(100vh - var(--app-header-height));
+  min-height: calc(100dvh - var(--app-header-height));
+  margin-left: var(--sidebar-width);
+  transition: margin-left 180ms ease;
+}
+
+.sidebarCollapsed .main {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+.appShell > :global(footer) {
+  position: relative;
+  z-index: 31;
+}
+
+.sidebarCollapsed :global(header) > div:first-child {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebarCollapsed :global(header) > div:first-child > a {
+  overflow: hidden;
+}
+
+.sidebarCollapsed :global(header) > div:first-child > a > img:last-child {
+  display: none;
+}
+
+.sidebarCollapsed :global(header) > div:first-child > button span {
+  display: inline-block;
+  transform: rotate(180deg);
+}
+
+@media (max-width: 900px) {
+  .main,
+  .sidebarCollapsed .main {
+    margin-left: 0;
+  }
+
+  .sidebarCollapsed :global(header) > div:first-child {
+    width: auto;
+  }
+
+  .sidebarCollapsed :global(header) > div:first-child > a > img:last-child {
+    display: block;
+  }
+}

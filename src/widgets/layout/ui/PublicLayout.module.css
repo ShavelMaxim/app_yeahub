@@ -1,0 +1,238 @@
+.shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--black-25);
+}
+
+.header {
+  position: relative;
+  z-index: 20;
+  background: var(--black-25);
+}
+
+.headerInner {
+  display: flex;
+  width: min(1216px, calc(100% - 40px));
+  height: 108px;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compactHeader {
+  border-bottom: 1px solid var(--black-50);
+}
+
+.compactHeader .headerInner {
+  height: 64px;
+}
+
+.landingHeader .navigation {
+  gap: 0;
+}
+
+.navigation,
+.navigation nav,
+.authActions {
+  display: flex;
+  align-items: center;
+}
+
+.navigation {
+  flex: 1;
+  justify-content: flex-end;
+  gap: clamp(36px, 7vw, 96px);
+}
+
+.navigation nav {
+  gap: 32px;
+}
+
+.navigation a {
+  color: var(--black-800);
+  font-size: var(--font-size-body-3);
+}
+
+.navigation a:hover,
+.navigation a:global(.active) {
+  color: var(--primary-700);
+}
+
+.navigation .register:hover,
+.navigation .register:focus-visible {
+  color: white;
+  background: var(--primary-800);
+}
+
+.authActions {
+  gap: 28px;
+}
+
+.authActions .register {
+  min-width: 170px;
+  padding: 15px 24px;
+  border-radius: 12px;
+  color: white;
+  background: var(--primary-700);
+  text-align: center;
+}
+
+.menuButton {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  padding: 9px;
+  background: transparent;
+}
+
+.menuButton span {
+  display: block;
+  height: 2px;
+  margin: 5px 0;
+  background: var(--black-800);
+}
+
+.menuButton img {
+  width: 32px;
+  height: 32px;
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  .landingHeader {
+    border-bottom: 1px solid var(--black-50);
+  }
+
+  .landingHeader .headerInner {
+    width: calc(100% - 60px);
+    height: 64px;
+    justify-content: space-between;
+  }
+
+  .landingHeader .navigation {
+    display: none;
+  }
+
+  .landingHeader .menuButton {
+    display: block;
+    margin-left: auto;
+  }
+
+  .landingHeader .navigationOpen {
+    position: absolute;
+    inset: 64px 0 auto;
+    display: flex;
+    max-height: calc(100vh - 64px);
+    max-height: calc(100dvh - 64px);
+    align-items: stretch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 24px 30px;
+    background: white;
+    box-shadow: var(--shadow-floating);
+  }
+
+  .landingHeader .navigationOpen .authActions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .landingHeader .navigationOpen a {
+    padding: 10px 0;
+  }
+
+  .landingHeader .navigationOpen .register {
+    width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .headerInner {
+    height: 72px;
+  }
+
+  .compactHeader .headerInner {
+    height: 64px;
+  }
+
+  .menuButton {
+    display: block;
+  }
+
+  .landingHeader {
+    position: sticky;
+    top: 0;
+  }
+
+  .landingHeader .headerInner {
+    width: calc(100% - 32px);
+    justify-content: flex-start;
+  }
+
+  .landingHeader .menuButton {
+    margin-left: auto;
+    background: url('../../../shared/config/assets/icons/hamburgerMenu.svg') center / 32px 32px
+      no-repeat;
+  }
+
+  .landingHeader .menuButton img {
+    opacity: 0;
+  }
+
+  .navigation {
+    position: absolute;
+    inset: 72px 0 auto;
+    display: none;
+    max-height: calc(100vh - 72px);
+    max-height: calc(100dvh - 72px);
+    align-items: stretch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 24px 20px;
+    background: white;
+    box-shadow: var(--shadow-floating);
+  }
+
+  .compactHeader .navigation {
+    inset-block-start: 64px;
+  }
+
+  .navigationOpen,
+  .navigation nav,
+  .authActions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navigation nav,
+  .authActions {
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .authActions {
+    margin-top: 20px;
+  }
+
+  .navigation a {
+    padding: 10px 0;
+  }
+
+  .authActions .register {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .landingHeader .headerInner {
+    height: 54px;
+  }
+
+  .landingHeader .navigation {
+    inset-block-start: 54px;
+    max-height: calc(100vh - 54px);
+    max-height: calc(100dvh - 54px);
+  }
+}

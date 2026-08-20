@@ -5,13 +5,17 @@ const catalogApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getSpecializations: builder.query<
       PaginatedResponse<Specialization>,
-      { page?: number; limit?: number }
+      { page?: number; limit?: number; title?: string }
     >({
       query: (params) => ({ url: '/specializations', params }),
       providesTags: (result) => [
         'Specialization',
         ...(result?.data.map(({ id }) => ({ type: 'Specialization' as const, id })) ?? []),
       ],
+    }),
+    getSpecializationById: builder.query<Specialization, number>({
+      query: (id) => `/specializations/${id}`,
+      providesTags: (_result, _error, id) => [{ type: 'Specialization', id }],
     }),
     createSpecialization: builder.mutation<Specialization, EntityPayload>({
       query: (body) => ({ url: '/specializations', method: 'POST', body }),
@@ -52,6 +56,7 @@ const catalogApi = baseApi.injectEndpoints({
 
 export const {
   useGetSpecializationsQuery,
+  useGetSpecializationByIdQuery,
   useCreateSpecializationMutation,
   useUpdateSpecializationMutation,
   useDeleteSpecializationMutation,
